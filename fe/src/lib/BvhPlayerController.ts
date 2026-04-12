@@ -38,7 +38,7 @@ export class BvhPlayerController {
     this.scene = new THREE.Scene();
     this.scene.background = null;
 
-    this.camera = new THREE.PerspectiveCamera(34, 1, 0.1, 2000);
+    this.camera = new THREE.PerspectiveCamera(52, 1, 0.1, 2000);
     this.camera.position.set(85, 90, 160);
     this.camera.up.set(0, 1, 0);
 
@@ -195,10 +195,15 @@ export class BvhPlayerController {
   private frameCharacter(size: THREE.Vector3) {
     const height = Math.max(size.y, 32);
     const depth = Math.max(size.z, 24);
-    const distance = Math.max(height * 1.15, depth * 2.1);
+    // Tighter distance so the character fills the frame with the wider FOV (52°).
+    // At FOV 52° and D = height * 1.05, vertical visible ≈ 1.02 × height,
+    // which fits the full body with a little breathing room.
+    const distance = Math.max(height * 1.05, depth * 1.8);
 
-    this.controls.target.set(0, height * 0.44, 0);
-    this.camera.position.set(distance * 0.42, height * 0.76, distance);
+    // Raise both target and camera so the view tilts more steeply downward
+    // and the knees/feet land above the bottom-docked progress bar.
+    this.controls.target.set(0, height * 0.62, 0);
+    this.camera.position.set(distance * 0.36, height * 0.90, distance);
     this.camera.near = 0.1;
     this.camera.far = distance * 8;
     this.camera.updateProjectionMatrix();
@@ -240,13 +245,20 @@ export class BvhPlayerController {
         this.currentTime = 0;
         this.error = null;
 
+        // Sample bounding box across the full animation so that one unusual
+        // pose at t=0 (crouching, leaping, etc.) cannot skew the framing.
+        const sampleCount = 10;
+        const unionBounds = new THREE.Box3();
+        for (let i = 0; i <= sampleCount; i++) {
+          this.mixer.setTime((i / sampleCount) * this.duration);
+          unionBounds.union(new THREE.Box3().setFromObject(this.characterGroup));
+        }
         this.mixer.setTime(0);
 
-        const bounds = new THREE.Box3().setFromObject(this.characterGroup);
-        const size = bounds.getSize(new THREE.Vector3());
-        const center = bounds.getCenter(new THREE.Vector3());
+        const size = unionBounds.getSize(new THREE.Vector3());
+        const center = unionBounds.getCenter(new THREE.Vector3());
 
-        this.characterGroup.position.set(-center.x, -bounds.min.y, -center.z);
+        this.characterGroup.position.set(-center.x, -unionBounds.min.y, -center.z);
         this.frameCharacter(size);
         this.play();
         this.emit();

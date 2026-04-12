@@ -136,11 +136,12 @@ select {
   right: 50%;
   bottom: 18px;
   left: 50%;
+  opacity: 0.82;
   display: grid;
   align-items: center;
   min-width: min(92vw, 420px);
-  min-height: 94px;
-  padding: 18px 26px;
+  min-height: 52px;
+  padding: 9px 26px;
   border: 1px solid rgba(17, 17, 17, 0.22);
   border-radius: 999px;
   background: rgba(245, 244, 239, 0.58);
@@ -175,8 +176,8 @@ select {
 
 .control-dock__needle {
   position: absolute;
-  top: 14px;
-  bottom: 14px;
+  top: 7px;
+  bottom: 7px;
   width: 2px;
   background: #111111;
 }
@@ -202,12 +203,9 @@ select {
   text-align: center;
 }
 
-.control-top .time-readout:first-child {
-  justify-self: start;
-}
-
+.control-top .time-readout:first-child,
 .control-top .time-readout:last-child {
-  justify-self: end;
+  justify-self: center;
 }
 
 .play-toggle {
