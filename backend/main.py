@@ -7,7 +7,8 @@ load_dotenv() # Load .env before initializing other modules
 from db import engine, Base
 from routes import generate, jobs, webhooks, media, chat, sessions
 
-# Create tables if they don't exist
+# Drop and recreate all tables (hackathon — no migration needed)
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Buildathon API")
