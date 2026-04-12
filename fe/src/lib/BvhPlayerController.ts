@@ -30,6 +30,8 @@ export class BvhPlayerController {
   private lastFrameAt = 0;
   private listeners = new Set<SnapshotListener>();
   private mixer: THREE.AnimationMixer | null = null;
+  private skeletonBonePairs: Array<[THREE.Bone, THREE.Bone]> = [];
+  private skeletonLines: THREE.LineSegments | null = null;
 
   constructor(container: HTMLElement, assetUrl: string) {
     this.container = container;
@@ -55,10 +57,12 @@ export class BvhPlayerController {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.enablePan = false;
-    this.controls.minDistance = 40;
-    this.controls.maxDistance = 420;
+    // Orbit limits are set dynamically in frameCharacter() once scale is known.
+    this.controls.minDistance = 0.01;
+    this.controls.maxDistance = 10000;
 
-    const grid = new THREE.GridHelper(320, 20, 0x171717, 0x6f6f6f);
+    // Grid proportioned for a ~1.8-unit normalised character.
+    const grid = new THREE.GridHelper(4, 8, 0x171717, 0x6f6f6f);
     grid.material.opacity = 0.32;
     grid.material.transparent = true;
     this.scene.add(grid);
@@ -159,11 +163,45 @@ export class BvhPlayerController {
       this.emit();
     }
 
+    this.updateSkeletonLines();
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
 
+  private updateSkeletonLines() {
+    if (!this.skeletonLines || this.skeletonBonePairs.length === 0) {
+      return;
+    }
+
+    const attr = this.skeletonLines.geometry.attributes.position as THREE.Float32BufferAttribute;
+    const arr = attr.array as Float32Array;
+    const _p = new THREE.Vector3();
+
+    for (let i = 0; i < this.skeletonBonePairs.length; i++) {
+      const [bone, parent] = this.skeletonBonePairs[i];
+      bone.getWorldPosition(_p);
+      arr[i * 6 + 0] = _p.x;
+      arr[i * 6 + 1] = _p.y;
+      arr[i * 6 + 2] = _p.z;
+      parent.getWorldPosition(_p);
+      arr[i * 6 + 3] = _p.x;
+      arr[i * 6 + 4] = _p.y;
+      arr[i * 6 + 5] = _p.z;
+    }
+
+    attr.needsUpdate = true;
+    this.skeletonLines.geometry.computeBoundingSphere();
+  }
+
   private disposeCharacter() {
+    if (this.skeletonLines) {
+      this.skeletonLines.geometry.dispose();
+      (this.skeletonLines.material as THREE.Material).dispose();
+      this.scene.remove(this.skeletonLines);
+      this.skeletonLines = null;
+    }
+    this.skeletonBonePairs = [];
+
     if (!this.characterGroup) {
       return;
     }
@@ -193,20 +231,18 @@ export class BvhPlayerController {
   }
 
   private frameCharacter(size: THREE.Vector3) {
-    const height = Math.max(size.y, 32);
-    const depth = Math.max(size.z, 24);
-    // Tighter distance so the character fills the frame with the wider FOV (52°).
-    // At FOV 52° and D = height * 1.05, vertical visible ≈ 1.02 × height,
-    // which fits the full body with a little breathing room.
-    const distance = Math.max(height * 1.05, depth * 1.8);
+    // size is already normalised to ~1.8 units by the auto-scale in load().
+    const height = size.y > 0 ? size.y : 1;
+    const depth  = size.z > 0 ? size.z : size.x > 0 ? size.x : height * 0.5;
+    const distance = Math.max(height * 1.3, depth * 2.0);
 
-    // Raise both target and camera so the view tilts more steeply downward
-    // and the knees/feet land above the bottom-docked progress bar.
-    this.controls.target.set(0, height * 0.62, 0);
-    this.camera.position.set(distance * 0.36, height * 0.90, distance);
-    this.camera.near = 0.1;
-    this.camera.far = distance * 8;
+    this.controls.target.set(0, height * 0.55, 0);
+    this.camera.position.set(distance * 0.36, height * 0.85, distance);
+    this.camera.near = distance * 0.005;
+    this.camera.far  = distance * 20;
     this.camera.updateProjectionMatrix();
+    this.controls.minDistance = distance * 0.25;
+    this.controls.maxDistance = distance * 10;
     this.controls.update();
   }
 
@@ -223,29 +259,13 @@ export class BvhPlayerController {
         this.disposeCharacter();
 
         const skeletonRoot = result.skeleton.bones[0];
-        const skeletonHelper = new THREE.SkeletonHelper(skeletonRoot);
-        skeletonHelper.material = new THREE.LineBasicMaterial({
-          color: 0x111111,
-          transparent: true,
-          opacity: 0.95,
-        });
 
         const boneContainer = new THREE.Group();
         boneContainer.add(skeletonRoot);
 
         this.characterGroup = new THREE.Group();
         this.characterGroup.add(boneContainer);
-        this.characterGroup.add(skeletonHelper);
         this.scene.add(this.characterGroup);
-
-        // Strip root bone translation so locomotion animations play in-place.
-        // Without this the character physically moves through world space,
-        // runs off-screen, and SkeletonHelper renders a ghost at the world
-        // origin (its vertex positions are root-relative but drawn at origin).
-        const rootBoneName = result.skeleton.bones[0].name;
-        result.clip.tracks = result.clip.tracks.filter(
-          track => track.name !== `${rootBoneName}.position`,
-        );
 
         this.mixer = new THREE.AnimationMixer(skeletonRoot);
         this.mixer.clipAction(result.clip).play();
@@ -256,19 +276,54 @@ export class BvhPlayerController {
 
         // Sample bounding box across the full animation so that one unusual
         // pose at t=0 (crouching, leaping, etc.) cannot skew the framing.
+        // Read bone world positions directly — Box3.setFromObject() skips
+        // THREE.Bone nodes (no geometry) and would return an empty box.
         const sampleCount = 10;
         const unionBounds = new THREE.Box3();
+        const _bp = new THREE.Vector3();
         for (let i = 0; i <= sampleCount; i++) {
           this.mixer.setTime((i / sampleCount) * this.duration);
-          unionBounds.union(new THREE.Box3().setFromObject(this.characterGroup));
+          for (const bone of result.skeleton.bones) {
+            unionBounds.expandByPoint(bone.getWorldPosition(_bp));
+          }
         }
         this.mixer.setTime(0);
 
-        const size = unionBounds.getSize(new THREE.Vector3());
-        const center = unionBounds.getCenter(new THREE.Vector3());
+        const rawSize   = unionBounds.getSize(new THREE.Vector3());
+        const rawCenter = unionBounds.getCenter(new THREE.Vector3());
 
-        this.characterGroup.position.set(-center.x, -unionBounds.min.y, -center.z);
-        this.frameCharacter(size);
+        // Normalise to ~1.8 units so the camera framing works regardless of
+        // whether the BVH uses metres, centimetres, or arbitrary units.
+        const TARGET_HEIGHT = 1.8;
+        const scale = rawSize.y > 0.001 ? TARGET_HEIGHT / rawSize.y : 1;
+        this.characterGroup.scale.setScalar(scale);
+        this.characterGroup.position.set(
+          -rawCenter.x * scale,
+          -unionBounds.min.y * scale,
+          -rawCenter.z * scale,
+        );
+        const scaledSize = rawSize.clone().multiplyScalar(scale);
+        this.frameCharacter(scaledSize);
+
+        // Build custom world-space skeleton LineSegments.
+        // SkeletonHelper is unreliable when characterGroup has a large scale factor,
+        // so we manage bone-pair geometry ourselves and update it every frame.
+        this.skeletonBonePairs = [];
+        for (const bone of result.skeleton.bones) {
+          if (bone.parent instanceof THREE.Bone) {
+            this.skeletonBonePairs.push([bone, bone.parent as THREE.Bone]);
+          }
+        }
+        const linePositions = new Float32Array(this.skeletonBonePairs.length * 6);
+        const lineGeo = new THREE.BufferGeometry();
+        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+        this.skeletonLines = new THREE.LineSegments(
+          lineGeo,
+          new THREE.LineBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.95 }),
+        );
+        this.skeletonLines.frustumCulled = false;
+        this.scene.add(this.skeletonLines);
+
         this.play();
         this.emit();
       },
