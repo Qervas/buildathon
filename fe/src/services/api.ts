@@ -71,6 +71,7 @@ export interface SessionMessage {
   role: string;
   content: string;
   created_at: string | null;
+  job_id?: string | null;
   job?: {
     id: string;
     type: string;
@@ -116,4 +117,17 @@ export async function getSessions(): Promise<ChatSession[]> {
 
 export async function hideSession(sessionId: string) {
   await fetch(`${API_BASE}/api/sessions/${sessionId}/hide`, { method: 'PATCH' });
+}
+
+export interface SessionDetail {
+  id: string;
+  title: string;
+  created_at: string;
+  messages: SessionMessage[];
+}
+
+export async function getSessionDetail(sessionId: string): Promise<SessionDetail> {
+  const res = await fetch(`${API_BASE}/api/sessions/${sessionId}`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
 }

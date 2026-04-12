@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { BvhPlayer } from './components/BvhPlayer';
 import { ChatView } from './components/chat/ChatView';
 import { Gallery } from './components/chat/Gallery';
 
-type Page = 'landing' | 'chat' | 'gallery';
+type Page = { view: 'landing' } | { view: 'chat'; sessionId?: string } | { view: 'gallery' };
 
 function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () => void }) {
   return (
@@ -67,41 +67,76 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
 }
 
 export default function App() {
-  const [page, setPage] = useState<Page>('landing');
+  const [page, setPage] = useState<Page>(() => {
+    // Restore from URL hash: #chat/sessionId or #gallery
+    const hash = window.location.hash.slice(1);
+    if (hash.startsWith('chat/')) {
+      return { view: 'chat', sessionId: hash.slice(5) };
+    }
+    if (hash === 'chat') return { view: 'chat' };
+    if (hash === 'gallery') return { view: 'gallery' };
+    return { view: 'landing' };
+  });
 
-  if (page === 'chat') {
+  const navigate = useCallback((next: Page) => {
+    setPage(next);
+    if (next.view === 'chat' && next.sessionId) {
+      window.location.hash = `chat/${next.sessionId}`;
+    } else if (next.view === 'chat') {
+      window.location.hash = 'chat';
+    } else if (next.view === 'gallery') {
+      window.location.hash = 'gallery';
+    } else {
+      window.location.hash = '';
+    }
+  }, []);
+
+  // Called by ChatView once it creates/loads a session
+  const handleSessionReady = useCallback((sessionId: string) => {
+    window.location.hash = `chat/${sessionId}`;
+  }, []);
+
+  if (page.view === 'chat') {
     return (
       <>
         <nav className="topnav">
-          <button className="topnav__back" onClick={() => setPage('landing')}>
+          <button className="topnav__back" onClick={() => navigate({ view: 'landing' })}>
             &larr; Back
           </button>
           <span className="topnav__title">Motion Studio</span>
-          <button className="topnav__link" onClick={() => setPage('gallery')}>
+          <button className="topnav__link" onClick={() => navigate({ view: 'gallery' })}>
             Gallery
           </button>
         </nav>
-        <ChatView />
+        <ChatView
+          initialSessionId={page.sessionId}
+          onSessionReady={handleSessionReady}
+        />
       </>
     );
   }
 
-  if (page === 'gallery') {
+  if (page.view === 'gallery') {
     return (
       <>
         <nav className="topnav">
-          <button className="topnav__back" onClick={() => setPage('landing')}>
+          <button className="topnav__back" onClick={() => navigate({ view: 'landing' })}>
             &larr; Back
           </button>
           <span className="topnav__title">Gallery</span>
-          <button className="topnav__link" onClick={() => setPage('chat')}>
+          <button className="topnav__link" onClick={() => navigate({ view: 'chat' })}>
             New Chat
           </button>
         </nav>
-        <Gallery />
+        <Gallery onOpenSession={(id) => navigate({ view: 'chat', sessionId: id })} />
       </>
     );
   }
 
-  return <Landing onEnter={() => setPage('chat')} onGallery={() => setPage('gallery')} />;
+  return (
+    <Landing
+      onEnter={() => navigate({ view: 'chat' })}
+      onGallery={() => navigate({ view: 'gallery' })}
+    />
+  );
 }
