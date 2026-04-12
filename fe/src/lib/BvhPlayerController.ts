@@ -238,6 +238,15 @@ export class BvhPlayerController {
         this.characterGroup.add(skeletonHelper);
         this.scene.add(this.characterGroup);
 
+        // Strip root bone translation so locomotion animations play in-place.
+        // Without this the character physically moves through world space,
+        // runs off-screen, and SkeletonHelper renders a ghost at the world
+        // origin (its vertex positions are root-relative but drawn at origin).
+        const rootBoneName = result.skeleton.bones[0].name;
+        result.clip.tracks = result.clip.tracks.filter(
+          track => track.name !== `${rootBoneName}.position`,
+        );
+
         this.mixer = new THREE.AnimationMixer(skeletonRoot);
         this.mixer.clipAction(result.clip).play();
 

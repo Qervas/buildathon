@@ -5,7 +5,7 @@ import {
   type BvhPlayerSnapshot,
 } from '../lib/BvhPlayerController';
 
-const DEMO_BVH_URL = '/demo/pirouette.bvh';
+const DEMO_BVH_URL = '/demo/running_animation.bvh';
 
 const INITIAL_SNAPSHOT: BvhPlayerSnapshot = {
   currentTime: 0,
