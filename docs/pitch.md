@@ -1,7 +1,6 @@
 # Pitch Deck — Buildathon LiU 2026
 
-> **Product:** ohao.tech — Open-Source AI Model Delivery Platform for Creators
-> **Team:** 3 people, 1 day
+> **Team:** ohao (3 people, 1 day)
 > **Track:** Open
 
 ---
@@ -48,14 +47,14 @@ One line. Big text. Let it land.
 
 We take the best open-source models, package them into simple APIs, and deliver them to creators who would never be able to use them otherwise.
 
-**ohao.tech / niua.ohao.tech — already live:**
-- **Music generation** — ACE-Step (open-source) → one API call
-- **Image generation** — FLUX (open-source) → one API call
-- **3D mesh generation** — TRELLIS (Microsoft, open-source) → one API call
-- **Auto-rigging** — Puppeteer (open-source) → one API call
-- **Animation** — Kimodo + GEM-X (NVIDIA, open-source) → one API call
+**What this looks like in practice:**
 
-**Every time a new model drops, we deploy it. That's our job. That's our moat.**
+Today we built an animation generation API. But the platform approach works for any model:
+- New text-to-motion model? Deploy it → creators get an API endpoint
+- New 3D generation model? Deploy it → developers call it from their game engine
+- New music model? Deploy it → indie devs get a soundtrack generator
+
+**Every time a new model drops, we deploy it. That's the business. That's the moat.**
 
 ---
 
@@ -88,12 +87,33 @@ Architecture diagram:
 - **Kimodo** (NVIDIA) → text to 77-joint skeleton animation
 - **GEM-X + SOMA** (NVIDIA) → video to motion capture
 
-**Already live on niua.ohao.tech:**
-- FLUX (image), ACE-Step (music), TRELLIS (3D), Puppeteer (rigging)
+**The platform approach scales:** same architecture works for image, music, 3D, rigging — any model.
 
 ---
 
-### Slide 6: Why Now — The Open-Source Tsunami
+### Slide 6: Market — Sweden Is THE Place For This
+
+**Sweden is the #1 game-producing country per capita in the world.**
+
+- **€1.8B+ revenue** (2018, grown significantly since)
+- **900+ game studios** across Sweden
+- **8,000-12,000 employees** directly in game development
+- **15-20% annual growth** over the past decade
+
+**Swedish game giants born here:**
+Minecraft (Mojang) · Battlefield (DICE) · Candy Crush (King) · Europa Universalis (Paradox) · Just Cause (Avalanche) · Helldivers (Arrowhead) · Payday (Starbreeze)
+
+**Why Sweden?**
+- Free university education with game dev programs (LiU, Uppsala, Skövde)
+- Earliest broadband adoption in Europe → generation of digital natives
+- Demoscene culture — hobbyist coding communities since the 80s
+- Flat work culture → creativity and autonomy
+
+**Our market:** Every one of these studios — and the thousands of indie developers around them — needs animation assets. We make that 100x faster and 1000x cheaper.
+
+---
+
+### Slide 7: Why Now — The Open-Source Tsunami
 
 - **2024-2026: open-source models reached production quality.** NVIDIA, Meta, Microsoft are releasing models that match last year's closed-source leaders.
 - **GTC 2026 signal:** NVIDIA explicitly positioning open-source as the second tier — not niche, but a massive market for every company that needs intelligence.
@@ -133,14 +153,13 @@ No. NVIDIA, Meta, Microsoft are model RESEARCHERS. They publish papers, release 
 
 ---
 
-### Slide 9: The Team + ohao.tech
+### Slide 10: The Team
 
-- **Frank Yin** — Founder of ohao.tech. Background in graphics & physics simulation. Built niua.ohao.tech — 6 AI models deployed, live in production.
+- **Frank Yin** — Background in graphics & physics simulation. Experience deploying open-source AI models to production.
 - **[Teammate 1]** — [background]
 - **[Teammate 2]** — [background]
 
-**This isn't a hackathon idea. This is an existing product.**
-niua.ohao.tech is live today with 6 deployed models (music, image, 3D, rigging, animation, video). We have Blender and Unreal Engine plugins. What we built today is the animation pipeline — one new piece of an existing platform.
+**We've worked in this space before.** Our team has hands-on experience packaging and deploying open-source AI models — not just for hackathons, but for real users. This project is the next step.
 
 ---
 
@@ -152,7 +171,7 @@ In one day, we:
 - Built a React frontend with 3D BVH skeleton viewer on Cloudflare Pages
 - End-to-end: type a sentence → watch a skeleton animate in your browser
 
-**All open-source models. All serverless. Built in one day because the platform architecture already exists.**
+**All open-source models. All serverless. All built in one day.**
 
 ---
 
@@ -161,7 +180,7 @@ In one day, we:
 **Every time a breakthrough open-source model is released, we deliver it to the world within days.**
 
 - **Today:** Animation (Kimodo, GEM-X)
-- **Already live:** Music (ACE-Step), Image (FLUX), 3D (TRELLIS), Rigging (Puppeteer)
+- **Roadmap:** Music (ACE-Step), Image (FLUX), 3D (TRELLIS), Rigging (Puppeteer)
 - **Next:** Physics simulation, facial animation, voice synthesis, video generation
 - **Distribution:** Web UI, API, MCP tools for AI agents, game engine plugins
 
@@ -172,8 +191,7 @@ In one day, we:
 ### Slide 12: Ask
 
 - **Looking for:** Beta users, game studio partnerships, feedback on the API
-- **Try it:** niua.ohao.tech (live today)
-- **Contact:** [your email / ohao.tech]
+- **Contact:** [your email]
 
 ---
 
