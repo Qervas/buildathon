@@ -9,17 +9,28 @@ interface Props {
 
 export function AnimationCard({ jobId }: Props) {
   const [job, setJob] = useState<Job | null>(null);
-  const [expanded, setExpanded] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
   const viewerRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<BvhPlayerController | null>(null);
+  const startTime = useRef(Date.now());
 
   useEffect(() => {
     const cleanup = pollJob(jobId, setJob);
     return cleanup;
   }, [jobId]);
 
+  // Elapsed timer while processing
   useEffect(() => {
-    if (!expanded || !viewerRef.current || !job?.result_url) return;
+    if (job?.status === 'completed' || job?.status === 'failed') return;
+    const timer = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startTime.current) / 1000));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [job?.status]);
+
+  // Auto-init viewer when completed
+  useEffect(() => {
+    if (!viewerRef.current || !job?.result_url) return;
     if (controllerRef.current) return;
 
     const url = getMediaUrl(job.result_url);
@@ -30,22 +41,27 @@ export function AnimationCard({ jobId }: Props) {
       controller.destroy();
       controllerRef.current = null;
     };
-  }, [expanded, job?.result_url]);
+  }, [job?.result_url]);
 
-  if (!job) {
+  if (!job || job.status === 'pending' || job.status === 'processing') {
     return (
-      <div className="anim-card anim-card--loading">
-        <div className="anim-card__spinner" />
-        <span>Submitting...</span>
-      </div>
-    );
-  }
-
-  if (job.status === 'pending' || job.status === 'processing') {
-    return (
-      <div className="anim-card anim-card--loading">
-        <div className="anim-card__spinner" />
-        <span>Generating animation on GPU...</span>
+      <div className="anim-card anim-card--processing">
+        <div className="anim-card__progress-bar">
+          <div className="anim-card__progress-fill" />
+        </div>
+        <div className="anim-card__status-row">
+          <div className="anim-card__spinner" />
+          <div className="anim-card__status-text">
+            <span className="anim-card__status-label">
+              {elapsed < 5 ? 'Warming up GPU...' :
+               elapsed < 15 ? 'Loading model on A10G...' :
+               elapsed < 30 ? 'Generating motion...' :
+               elapsed < 50 ? 'Denoising animation...' :
+               'Finalizing BVH export...'}
+            </span>
+            <span className="anim-card__elapsed">{elapsed}s</span>
+          </div>
+        </div>
       </div>
     );
   }
@@ -59,20 +75,18 @@ export function AnimationCard({ jobId }: Props) {
   }
 
   return (
-    <div className="anim-card">
-      <div className="anim-card__header">
+    <div className="anim-card anim-card--complete">
+      <div className="anim-card__viewer">
+        <div ref={viewerRef} className="anim-card__viewer-inner" />
+      </div>
+      <div className="anim-card__footer">
         <span className="anim-card__badge">Animation</span>
         {job.meta && (
           <span className="anim-card__meta">
             {job.meta.frames} frames &middot; {job.meta.fps}fps
+            {job.meta.gpu_seconds && <> &middot; {job.meta.gpu_seconds}s GPU</>}
           </span>
         )}
-        <button
-          className="anim-card__toggle"
-          onClick={() => setExpanded((v) => !v)}
-        >
-          {expanded ? 'Collapse' : 'Preview'}
-        </button>
         {job.result_url && (
           <a
             className="anim-card__download"
@@ -83,11 +97,6 @@ export function AnimationCard({ jobId }: Props) {
           </a>
         )}
       </div>
-      {expanded && (
-        <div className="anim-card__viewer">
-          <div ref={viewerRef} className="anim-card__viewer-inner" />
-        </div>
-      )}
     </div>
   );
 }
