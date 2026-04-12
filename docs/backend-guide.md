@@ -6,6 +6,17 @@
 
 ---
 
+## Tested Modal Endpoints (LIVE — verified 2026-04-12)
+
+| Service | Endpoint | Tested Input | Result |
+|---------|----------|-------------|--------|
+| **Text-to-Motion** | `POST https://qervas--buildathon-text2motion-kimodoservice-generate.modal.run` | `{"prompt": "a person waving hello", "duration": 2.0}` | 60 frames @ 30fps, 3.85s GPU |
+| **Motion Capture** | `POST https://qervas--buildathon-motion-motionservice-generate.modal.run` | `{"video_key": "uploads/test/walk.mp4", "options": {"fps": 30}}` | 255 frames @ 30fps, 118s GPU |
+
+Both write BVH files to the `buildathon` R2 bucket at `outputs/<job_id>/animation.bvh`.
+
+---
+
 ## Quick Start
 
 ```bash
@@ -307,7 +318,29 @@ async def motion(video_key: str, job_id: str, webhook_url: str) -> dict:
         return resp.json()
 ```
 
-**Important:** Text2motion usually returns immediately (~30-60s). Motion capture can take 2+ minutes — use the webhook pattern for that.
+**Important — tested behavior:**
+
+- **Text2motion** returns directly in ~30-60s. You can `await` the response.
+- **Motion capture** takes 60-120s+ and Modal returns a `303` redirect mid-request before the final `200`. Two ways to handle this:
+  - **Option A (recommended):** Use the webhook pattern. Don't wait for the response — just fire the request, return `job_id` to frontend, and let Modal call your `/api/webhooks/modal` when done.
+  - **Option B:** Use `httpx.AsyncClient(follow_redirects=True, timeout=300)` to wait for the full response. Works but blocks a connection for 2+ minutes.
+
+```python
+# Option A: fire-and-forget + webhook (recommended for motion)
+async def motion(video_key: str, job_id: str, webhook_url: str) -> dict:
+    async with httpx.AsyncClient(timeout=30) as client:
+        try:
+            resp = await client.post(MODAL_MOTION_URL, json={
+                "video_key": video_key,
+                "job_id": job_id,
+                "webhook_url": webhook_url,
+                "options": {"fps": 30},
+            })
+            return resp.json()
+        except httpx.ReadTimeout:
+            # Expected — Modal is processing, will call webhook when done
+            return {"status": "processing"}
+```
 
 ---
 
