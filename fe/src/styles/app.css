@@ -273,6 +273,119 @@ select {
   }
 }
 
+/* Landing Page */
+
+.landing {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.landing__hero {
+  display: grid;
+  gap: 12px;
+  max-width: 720px;
+  padding-bottom: 40px;
+}
+
+.landing__hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.6rem, 4vw, 4.6rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+  margin: 0;
+}
+
+.landing__hero h1 em {
+  font-style: italic;
+  color: rgba(21, 21, 21, 0.55);
+}
+
+.landing__actions {
+  padding-top: 8px;
+}
+
+.landing__cta {
+  padding: 14px 32px;
+  border: 1px solid rgba(17, 17, 17, 0.82);
+  border-radius: 999px;
+  background: #151515;
+  color: #f5f0eb;
+  font-size: 0.94rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.landing__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(22, 16, 10, 0.18);
+}
+
+.landing__demo {
+  margin-bottom: 48px;
+}
+
+.landing__features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  padding-bottom: 48px;
+}
+
+.feature-card {
+  padding: 28px 24px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.feature-card h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 6px 0 8px;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(21, 21, 21, 0.6);
+}
+
+/* Top Nav */
+
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.topnav__back {
+  padding: 6px 14px;
+  border: 1px solid rgba(17, 17, 17, 0.15);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #151515;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.topnav__back:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.topnav__title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+}
+
 @media (max-width: 560px) {
   .viewer-status {
     right: 18px;
