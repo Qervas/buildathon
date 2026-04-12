@@ -16,11 +16,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # TODO: Add your build step here once you pick a framework, e.g.:
-      # - name: Install & Build
-      #   run: |
-      #     npm ci
-      #     npm run build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install & Build Frontend
+        working-directory: fe
+        run: |
+          npm ci
+          npx tsc && npx vite build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
