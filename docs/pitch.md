@@ -1,8 +1,17 @@
 # Pitch Deck — Buildathon LiU 2026
 
-> **Product:** AI Animation Generation Platform
+> **Product:** ohao.tech — Open-Source AI Model Delivery Platform for Creators
 > **Team:** 3 people, 1 day
 > **Track:** Open
+
+---
+
+## The Core Thesis (memorize this)
+
+> Every week, NVIDIA, Meta, Microsoft, and others release state-of-the-art open-source AI models.
+> These models are as powerful as last year's closed models.
+> But they sit on Hugging Face, unusable by 99% of creators and developers.
+> **We are the missionaries who deliver them.**
 
 ---
 
@@ -12,33 +21,41 @@
 
 ### Slide 1: Hook
 
-**"What if you could create motion capture quality animation — without cameras, suits, or studios?"**
+**"Every month, a new breakthrough AI model is open-sourced. And nobody can use it."**
 
 One line. Big text. Let it land.
+
+> NVIDIA open-sourced Kimodo — text to motion capture. Microsoft open-sourced TRELLIS — image to 3D. Meta open-sourced Llama. They sit on Hugging Face with 50-page setup guides, CUDA dependencies, and GPU requirements. The 99% of creators who need these tools... can't touch them.
 
 ---
 
 ### Slide 2: The Problem
 
-**Game developers and creators spend weeks on animation.**
+**Open-source AI models are exploding. But there's a delivery gap.**
 
-- Professional motion capture: $10,000-50,000 per session
-- Manual animation: days per character action
-- Indie developers: stuck with asset store or stiff procedural animation
-- The tools exist for AAA studios, not for everyone else
+- NVIDIA, Meta, Microsoft release SOTA models every month
+- Closed models (OpenAI, Midjourney) lead on performance
+- But open-source is catching up fast — **GTC 2026: open-source is the second tier, and the market is massive**
+- Problem: these models need CUDA, GPUs, Python pipelines, 50-page READMEs
+- **Creators, game developers, and small studios can't use them**
+- The models exist. The delivery mechanism doesn't.
 
 ---
 
 ### Slide 3: The Solution
 
-**Type a sentence. Get a skeleton animation.**
+**We are the delivery platform for open-source AI models.**
 
-Show a simple before/after:
-- **Before:** "a person walking confidently" (text)
-- **After:** 3D skeleton animation playing in browser (screenshot/GIF from our viewer)
+We take the best open-source models, package them into simple APIs, and deliver them to creators who would never be able to use them otherwise.
 
-Also:
-- **Upload a video → get motion capture data** (no suit, no studio, just your phone)
+**ohao.tech / niua.ohao.tech — already live:**
+- **Music generation** — ACE-Step (open-source) → one API call
+- **Image generation** — FLUX (open-source) → one API call
+- **3D mesh generation** — TRELLIS (Microsoft, open-source) → one API call
+- **Auto-rigging** — Puppeteer (open-source) → one API call
+- **Animation** — Kimodo + GEM-X (NVIDIA, open-source) → one API call
+
+**Every time a new model drops, we deploy it. That's our job. That's our moat.**
 
 ---
 
@@ -48,75 +65,115 @@ Also:
 
 ---
 
-### Slide 5: How It Works
+### Slide 5: How It Works — The Platform
 
-Architecture diagram (simplified version of what we built):
+Architecture diagram:
 
 ```
-User prompt → Our API → NVIDIA Kimodo (GPU) → BVH Animation
-User video  → Our API → NVIDIA GEM-X  (GPU) → BVH Animation
+┌───────────────────────────────────────────────────────┐
+│              ohao.tech Platform                        │
+│                                                        │
+│   New model released on HuggingFace                    │
+│        ↓                                               │
+│   We evaluate, optimize, deploy to serverless GPU      │
+│        ↓                                               │
+│   Expose as simple API / MCP / Plugin                  │
+│        ↓                                               │
+│   Creators use via web UI, API, Blender, Unity,        │
+│   or through their AI coding agent                     │
+└───────────────────────────────────────────────────────┘
 ```
 
-**Key tech:**
-- **Kimodo** (NVIDIA) — state-of-the-art text-to-motion model
-- **GEM-X + SOMA** (NVIDIA) — video motion capture, no body suit needed
-- **77-78 joint SOMA skeleton** — production-quality bone structure
-- **BVH format** — industry standard, works in Blender, Unity, Unreal
+**Today's demo — animation pipeline:**
+- **Kimodo** (NVIDIA) → text to 77-joint skeleton animation
+- **GEM-X + SOMA** (NVIDIA) → video to motion capture
+
+**Already live on niua.ohao.tech:**
+- FLUX (image), ACE-Step (music), TRELLIS (3D), Puppeteer (rigging)
 
 ---
 
-### Slide 6: Why Now
+### Slide 6: Why Now — The Open-Source Tsunami
 
-- Open-source AI models have reached production quality (NVIDIA open-sourced these in 2025)
-- Serverless GPU (Modal.com) makes inference affordable — pay per second, not per server
-- Game industry is $200B+ and growing — indie developers are the fastest-growing segment
-- AI coding agents (Claude Code, Cursor) are becoming the primary dev tool — they need specialized capabilities they don't have natively
-
----
-
-### Slide 7: Business Model
-
-**API-as-a-Service**
-
-- **Free tier:** X generations/month (developer adoption)
-- **Pro:** $29/month — unlimited text-to-motion, 100 video captures
-- **Enterprise:** Custom pricing — bulk API access, priority GPU, SLA
-
-**Distribution channels:**
-- Direct API (developers integrate into their pipelines)
-- MCP server (AI coding agents call our API as a tool)
-- Blender/Unity plugins (creators use inside their existing workflow)
+- **2024-2026: open-source models reached production quality.** NVIDIA, Meta, Microsoft are releasing models that match last year's closed-source leaders.
+- **GTC 2026 signal:** NVIDIA explicitly positioning open-source as the second tier — not niche, but a massive market for every company that needs intelligence.
+- **Serverless GPU** (Modal.com, RunPod) makes deployment affordable — pay per second, not per server.
+- **AI coding agents** (Claude Code, Cursor, Codex) are becoming the primary developer tool — they need specialized capabilities (MCP tools) they don't have natively.
+- **The gap:** Models are released faster than anyone can package them. The last-mile delivery problem is the opportunity.
 
 ---
 
-### Slide 8: The Team + ohao.tech
+### Slide 7: Moat — Why Us, Why Not Someone Else
 
-- **Frank Yin** — Founder of ohao.tech, built niua.ohao.tech (AI game asset platform: music, images, 3D mesh, rigging, animation)
+**"Won't the model creators just do this themselves?"**
+
+No. NVIDIA, Meta, Microsoft are model RESEARCHERS. They publish papers, release weights, and move on. They don't:
+- Package models for end users
+- Handle cross-model pipelines (image → 3D → rig → animate)
+- Build creator-facing UIs, plugins, APIs
+- Maintain inference infra at scale
+- Keep up with every new model across every domain
+
+**We are the Cloudflare of open-source AI models.** Cloudflare didn't create the internet — they made it fast and accessible. We don't create models — we make them usable.
+
+**Compounding moat:** Every model we deploy makes the platform more valuable. Image gen + 3D gen + rigging + animation = a pipeline no single model can offer. The more models we integrate, the harder we are to replicate.
+
+### Slide 8: Business Model
+
+**Platform-as-a-Service — usage-based**
+
+- **Free tier:** Limited generations/month (developer adoption)
+- **Pro ($29/mo):** Unlimited text-to-motion, 100 video captures, all asset types
+- **Enterprise:** Custom — bulk API, priority GPU, SLA, private deployments
+
+**Three distribution channels:**
+1. **Web UI** (niua.ohao.tech) — creators use directly in browser
+2. **API** — developers integrate into their pipelines
+3. **MCP / Plugins** — AI agents and game engines call us as a tool (Blender, Unity, Claude Code)
+
+---
+
+### Slide 9: The Team + ohao.tech
+
+- **Frank Yin** — Founder of ohao.tech. Background in graphics & physics simulation. Built niua.ohao.tech — 6 AI models deployed, live in production.
 - **[Teammate 1]** — [background]
 - **[Teammate 2]** — [background]
 
-**This isn't our first product.** niua.ohao.tech already generates game assets for humans via a web UI. Today we proved the same technology works as an API service — a new distribution channel, same domain expertise.
+**This isn't a hackathon idea. This is an existing product.**
+niua.ohao.tech is live today with 6 deployed models (music, image, 3D, rigging, animation, video). We have Blender and Unreal Engine plugins. What we built today is the animation pipeline — one new piece of an existing platform.
 
 ---
 
-### Slide 9: What We Built Today
+### Slide 10: What We Built Today
 
 In one day, we:
-- Deployed 2 GPU inference services (Kimodo + GEM-X) on Modal.com
+- Deployed 2 NVIDIA GPU inference services on Modal.com (Kimodo + GEM-X)
 - Built a FastAPI backend with PostgreSQL on Railway
-- Built a React frontend with 3D BVH viewer on Cloudflare Pages
-- End-to-end tested: text → animation, video → motion capture
+- Built a React frontend with 3D BVH skeleton viewer on Cloudflare Pages
+- End-to-end: type a sentence → watch a skeleton animate in your browser
 
-**All open-source models. All serverless. All works.**
+**All open-source models. All serverless. Built in one day because the platform architecture already exists.**
 
 ---
 
-### Slide 10: Ask / Next Steps
+### Slide 11: Vision
 
-- **Next:** Add more animation models (dance, fighting, sports-specific)
-- **Next:** Unity/Unreal plugin for direct import
-- **Next:** MCP server for AI coding agents (the "GameForge" vision)
-- **Looking for:** Early beta users, API feedback, partnerships with game studios
+**Every time a breakthrough open-source model is released, we deliver it to the world within days.**
+
+- **Today:** Animation (Kimodo, GEM-X)
+- **Already live:** Music (ACE-Step), Image (FLUX), 3D (TRELLIS), Rigging (Puppeteer)
+- **Next:** Physics simulation, facial animation, voice synthesis, video generation
+- **Distribution:** Web UI, API, MCP tools for AI agents, game engine plugins
+
+**The model landscape changes every month. We are the constant — the platform that makes it all accessible.**
+
+---
+
+### Slide 12: Ask
+
+- **Looking for:** Beta users, game studio partnerships, feedback on the API
+- **Try it:** niua.ohao.tech (live today)
+- **Contact:** [your email / ohao.tech]
 
 ---
 
@@ -174,8 +231,14 @@ If anything breaks during the live demo:
 ## Talking Points for Q&A
 
 **"How is this different from X?"**
-- Rosebud/Sett/CodeWisp generate full games — we generate animation assets. Different layer. We're infrastructure, not application.
-- Existing MCPs (pixelforge, game-asset-mcp) generate images. We generate motion — temporal, skeletal, physics-based. Fundamentally different.
+- Rosebud/Sett generate full games — we provide the AI infrastructure layer. Different altitude. They're applications, we're the platform they should be building on.
+- Replicate/HuggingFace host models — they're model registries. We curate, optimize, and pipeline models for specific creative workflows. Replicate gives you a raw model endpoint. We give you "turn this text into a game-ready animation."
+- Existing game asset MCPs generate images. We generate across modalities — music, 3D, animation, rigging — as an integrated pipeline.
+
+**"What's your moat? Can't someone just deploy the same models?"**
+- Anyone can deploy ONE model. We deploy and PIPELINE them: image → 3D mesh → auto-rig → animate. That cross-model orchestration is the moat.
+- We move fast. New model drops Tuesday, we deploy it Thursday. We've done this 6 times already.
+- Domain expertise compounds. We know the quirks (SOMA reference root stripping, Kimodo's gated Llama dependency, TRELLIS texture optimization). This knowledge doesn't come from reading papers — it comes from shipping.
 
 **"What about copyright/licensing?"**
 - Kimodo: NVIDIA Open Model License (commercial use OK)
