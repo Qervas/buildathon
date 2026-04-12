@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_URL || '';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://backend-production-b095.up.railway.app';
 
 export interface Job {
   id: string;
