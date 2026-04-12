@@ -137,7 +137,11 @@ class KimodoService:
         root_positions = joints_pos[:, skeleton.root_idx, :]
 
         bvh_bytes = motion_to_bvh_bytes(local_rot_mats, root_positions, skeleton=skeleton, fps=self.model.fps)
-        bvh_bytes = _strip_reference_root(bvh_bytes)
+
+        # Fix SOMA BVH: strip reference bone + scale cm→m
+        from core.base import strip_reference_root, scale_bvh_to_meters
+        bvh_bytes = strip_reference_root(bvh_bytes)
+        bvh_bytes = scale_bvh_to_meters(bvh_bytes)
 
         torch.cuda.empty_cache()
 
@@ -157,49 +161,3 @@ class KimodoService:
         }
 
 
-def _strip_reference_root(bvh_bytes: bytes) -> bytes:
-    """Remove the SOMA reference bone from BVH output.
-
-    SOMA BVH has two ROOT entries: a static reference frame (1 joint)
-    and the actual body skeleton (77 joints). The frontend BVH viewer
-    only reads the first ROOT. Strip the reference bone so the
-    body skeleton becomes the first (and only) ROOT.
-    """
-    text = bvh_bytes.decode("utf-8")
-    lines = text.split("\n")
-
-    root_indices = [i for i, line in enumerate(lines) if line.strip().startswith("ROOT ")]
-    if len(root_indices) < 2:
-        return bvh_bytes
-
-    first_root_channels = 0
-    brace_depth = 0
-    for i in range(root_indices[0], root_indices[1]):
-        line = lines[i].strip()
-        if "{" in line:
-            brace_depth += 1
-        if "}" in line:
-            brace_depth -= 1
-        if line.startswith("CHANNELS"):
-            first_root_channels += int(line.split()[1])
-
-    hierarchy_lines = ["HIERARCHY"]
-    hierarchy_lines.extend(lines[root_indices[1]:])
-
-    motion_idx = next(i for i, line in enumerate(hierarchy_lines) if line.strip() == "MOTION")
-    new_hierarchy = hierarchy_lines[:motion_idx]
-
-    orig_motion_idx = next(i for i, line in enumerate(lines) if line.strip() == "MOTION")
-    motion_header = lines[orig_motion_idx:orig_motion_idx + 3]
-
-    frame_lines = []
-    for line in lines[orig_motion_idx + 3:]:
-        line = line.strip()
-        if not line:
-            continue
-        values = line.split()
-        if len(values) > first_root_channels:
-            frame_lines.append(" ".join(values[first_root_channels:]))
-
-    result = "\n".join(new_hierarchy + motion_header + frame_lines) + "\n"
-    return result.encode("utf-8")
