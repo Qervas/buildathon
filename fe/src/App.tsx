@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { BvhPlayer } from './components/BvhPlayer';
 import { ChatView } from './components/chat/ChatView';
+import { Gallery } from './components/chat/Gallery';
 
-type Page = 'landing' | 'chat';
+type Page = 'landing' | 'chat' | 'gallery';
 
-function Landing({ onEnter }: { onEnter: () => void }) {
+function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () => void }) {
   return (
     <main className="page-shell">
       <section className="landing">
@@ -23,6 +24,9 @@ function Landing({ onEnter }: { onEnter: () => void }) {
           <div className="landing__actions">
             <button className="landing__cta" onClick={onEnter}>
               Try Motion Studio
+            </button>
+            <button className="landing__cta-secondary" onClick={onGallery}>
+              View Gallery
             </button>
           </div>
         </div>
@@ -73,11 +77,31 @@ export default function App() {
             &larr; Back
           </button>
           <span className="topnav__title">Motion Studio</span>
+          <button className="topnav__link" onClick={() => setPage('gallery')}>
+            Gallery
+          </button>
         </nav>
         <ChatView />
       </>
     );
   }
 
-  return <Landing onEnter={() => setPage('chat')} />;
+  if (page === 'gallery') {
+    return (
+      <>
+        <nav className="topnav">
+          <button className="topnav__back" onClick={() => setPage('landing')}>
+            &larr; Back
+          </button>
+          <span className="topnav__title">Gallery</span>
+          <button className="topnav__link" onClick={() => setPage('chat')}>
+            New Chat
+          </button>
+        </nav>
+        <Gallery />
+      </>
+    );
+  }
+
+  return <Landing onEnter={() => setPage('chat')} onGallery={() => setPage('gallery')} />;
 }

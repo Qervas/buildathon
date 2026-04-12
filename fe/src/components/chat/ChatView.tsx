@@ -3,7 +3,7 @@ import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
 import { AnimationCard } from './AnimationCard';
 import { streamChat, type ChatMessage as ChatMsg } from '../../services/groq';
-import { generateText2Motion } from '../../services/api';
+import { generateText2Motion, createSession, saveMessage } from '../../services/api';
 
 interface UIMessage {
   id: string;
@@ -36,8 +36,14 @@ export function ChatView() {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [history, setHistory] = useState<ChatMsg[]>([]);
   const [streaming, setStreaming] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const generatedRef = useRef<Set<string>>(new Set());
+
+  // Create session on mount
+  useEffect(() => {
+    createSession().then((s) => setSessionId(s.id)).catch(() => {});
+  }, []);
 
   const scrollToBottom = useCallback(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
@@ -59,6 +65,11 @@ export function ChatView() {
         setMessages((prev) => prev.map((m) =>
           m.id === msgId ? { ...m, jobId: job_id, generating: false } : m
         ));
+        // Update the assistant message in DB with the job_id
+        if (sessionId) {
+          // Save a note that this message triggered a generation
+          saveMessage(sessionId, 'assistant', `[Generated animation: ${parsed.prompt}]`, job_id).catch(() => {});
+        }
       } catch (err) {
         setMessages((prev) => [
           ...prev,
@@ -66,7 +77,7 @@ export function ChatView() {
         ]);
       }
     }
-  }, []);
+  }, [sessionId]);
 
   const handleSend = useCallback(async (text: string) => {
     const userMsg: UIMessage = { id: nextId(), role: 'user', content: text };
@@ -74,6 +85,11 @@ export function ChatView() {
     const assistantMsg: UIMessage = { id: assistantId, role: 'assistant', content: '' };
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
+
+    // Persist user message
+    if (sessionId) {
+      saveMessage(sessionId, 'user', text).catch(() => {});
+    }
 
     const newHistory: ChatMsg[] = [...history, { role: 'user', content: text }];
     setHistory(newHistory);
@@ -105,6 +121,11 @@ export function ChatView() {
             m.id === assistantId ? { ...m, content: display } : m
           ));
 
+          // Persist assistant message
+          if (sessionId) {
+            saveMessage(sessionId, 'assistant', display).catch(() => {});
+          }
+
           const parsed = parseGenerateBlock(fullText);
           if (parsed) {
             triggerGeneration(assistantId, parsed);
@@ -122,7 +143,7 @@ export function ChatView() {
       }
       setStreaming(false);
     }
-  }, [history, triggerGeneration]);
+  }, [history, triggerGeneration, sessionId]);
 
   const handleFileSelect = useCallback((_file: File) => {
     handleSend('I want to extract motion capture from this video.');

@@ -64,3 +64,56 @@ export function pollJob(
   }, intervalMs);
   return () => clearInterval(timer);
 }
+
+// ─── Sessions ────────────────────────────────────────
+
+export interface SessionMessage {
+  role: string;
+  content: string;
+  created_at: string | null;
+  job?: {
+    id: string;
+    type: string;
+    status: string;
+    result_url: string | null;
+    meta: { frames: number; fps: number; gpu_seconds?: number } | null;
+  };
+}
+
+export interface ChatSession {
+  id: string;
+  title: string;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+  messages: SessionMessage[];
+}
+
+export async function createSession(): Promise<{ id: string }> {
+  const res = await fetch(`${API_BASE}/api/sessions`, { method: 'POST' });
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function saveMessage(
+  sessionId: string,
+  role: string,
+  content: string,
+  jobId?: string,
+) {
+  await fetch(`${API_BASE}/api/sessions/message`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: sessionId, role, content, job_id: jobId || null }),
+  });
+}
+
+export async function getSessions(): Promise<ChatSession[]> {
+  const res = await fetch(`${API_BASE}/api/sessions`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function hideSession(sessionId: string) {
+  await fetch(`${API_BASE}/api/sessions/${sessionId}/hide`, { method: 'PATCH' });
+}
