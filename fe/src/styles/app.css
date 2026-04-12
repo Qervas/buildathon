@@ -176,8 +176,8 @@ select {
 
 .control-dock__needle {
   position: absolute;
-  top: 7px;
-  bottom: 7px;
+  top: 0;
+  bottom: 0;
   width: 2px;
   background: #111111;
 }
