@@ -1,10 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getSessions, hideSession, getMediaUrl, type ChatSession } from '../../services/api';
-import { AnimationCard } from './AnimationCard';
+import { BvhPlayerController } from '../../lib/BvhPlayerController';
 
-export function Gallery() {
+interface Props {
+  onOpenSession?: (sessionId: string) => void;
+}
+
+function GalleryViewer({ url }: { url: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const controllerRef = useRef<BvhPlayerController | null>(null);
+
+  useEffect(() => {
+    if (!ref.current || controllerRef.current) return;
+    const controller = new BvhPlayerController(ref.current, url);
+    controllerRef.current = controller;
+    return () => {
+      controller.destroy();
+      controllerRef.current = null;
+    };
+  }, [url]);
+
+  return <div ref={ref} className="gallery-viewer" />;
+}
+
+export function Gallery({ onOpenSession }: Props) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
 
   const load = () => {
     getSessions()
@@ -18,6 +40,15 @@ export function Gallery() {
   const handleHide = async (id: string) => {
     await hideSession(id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const toggleViewer = (jobId: string) => {
+    setExpandedJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(jobId)) next.delete(jobId);
+      else next.add(jobId);
+      return next;
+    });
   };
 
   if (loading) {
@@ -46,6 +77,14 @@ export function Gallery() {
             <span className="gallery-card__time">
               {new Date(session.created_at).toLocaleString()}
             </span>
+            {onOpenSession && (
+              <button
+                className="gallery-card__resume"
+                onClick={() => onOpenSession(session.id)}
+              >
+                Resume
+              </button>
+            )}
             <button
               className="gallery-card__hide"
               onClick={() => handleHide(session.id)}
@@ -56,9 +95,11 @@ export function Gallery() {
           </div>
           <div className="gallery-card__messages">
             {session.messages.map((msg, i) => (
-              <div key={i} className={`gallery-msg gallery-msg--${msg.role}`}>
-                <span className="gallery-msg__role">{msg.role}</span>
-                <span className="gallery-msg__text">{msg.content}</span>
+              <div key={i}>
+                <div className={`gallery-msg gallery-msg--${msg.role}`}>
+                  <span className="gallery-msg__role">{msg.role}</span>
+                  <span className="gallery-msg__text">{msg.content}</span>
+                </div>
                 {msg.job && msg.job.status === 'completed' && msg.job.result_url && (
                   <div className="gallery-msg__result">
                     <span className="anim-card__badge">Animation</span>
@@ -67,6 +108,12 @@ export function Gallery() {
                         {msg.job.meta.frames} frames &middot; {msg.job.meta.fps}fps
                       </span>
                     )}
+                    <button
+                      className="anim-card__toggle"
+                      onClick={() => toggleViewer(msg.job!.id)}
+                    >
+                      {expandedJobs.has(msg.job.id) ? 'Collapse' : 'Preview'}
+                    </button>
                     <a
                       className="anim-card__download"
                       href={getMediaUrl(msg.job.result_url)}
@@ -74,6 +121,11 @@ export function Gallery() {
                     >
                       Download BVH
                     </a>
+                  </div>
+                )}
+                {msg.job && expandedJobs.has(msg.job.id) && msg.job.result_url && (
+                  <div className="gallery-viewer-wrap">
+                    <GalleryViewer url={getMediaUrl(msg.job.result_url)} />
                   </div>
                 )}
               </div>

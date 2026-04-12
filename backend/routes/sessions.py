@@ -50,6 +50,41 @@ def list_sessions(db: Session = Depends(get_db)):
     return result
 
 
+@router.get("/api/sessions/{session_id}")
+def get_session(session_id: UUID, db: Session = Depends(get_db)):
+    """Load a single session with all messages and jobs."""
+    session = db.query(ChatSession).filter(ChatSession.id == session_id).first()
+    if not session:
+        return {"error": "Session not found"}
+
+    msgs = []
+    for m in session.messages:
+        msg = {
+            "role": m.role,
+            "content": m.content,
+            "created_at": m.created_at.isoformat() if m.created_at else None,
+            "job_id": str(m.job_id) if m.job_id else None,
+        }
+        if m.job_id:
+            job = db.query(Job).filter(Job.id == m.job_id).first()
+            if job:
+                msg["job"] = {
+                    "id": str(job.id),
+                    "type": job.type,
+                    "status": job.status,
+                    "result_url": f"/api/media/{job.result_key}" if job.result_key else None,
+                    "meta": job.result_meta,
+                }
+        msgs.append(msg)
+
+    return {
+        "id": str(session.id),
+        "title": session.title,
+        "created_at": session.created_at.isoformat() if session.created_at else None,
+        "messages": msgs,
+    }
+
+
 @router.post("/api/sessions")
 def create_session(db: Session = Depends(get_db)):
     """Create a new chat session."""

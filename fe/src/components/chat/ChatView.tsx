@@ -3,7 +3,7 @@ import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
 import { AnimationCard } from './AnimationCard';
 import { streamChat, type ChatMessage as ChatMsg } from '../../services/groq';
-import { generateText2Motion, createSession, saveMessage } from '../../services/api';
+import { generateText2Motion, createSession, saveMessage, getSessionDetail } from '../../services/api';
 
 interface UIMessage {
   id: string;
@@ -13,12 +13,17 @@ interface UIMessage {
   generating?: boolean;
 }
 
+interface Props {
+  initialSessionId?: string;
+  onSessionReady?: (sessionId: string) => void;
+}
+
 let msgCounter = 0;
 function nextId() {
   return `msg-${++msgCounter}-${Date.now()}`;
 }
 
-function parseGenerateBlock(text: string): { action: string; prompt?: string; duration?: number; video?: boolean } | null {
+function parseGenerateBlock(text: string): { action: string; prompt?: string; duration?: number } | null {
   const match = text.match(/```generate\s*\n([\s\S]*?)\n```/);
   if (!match) return null;
   try {
@@ -32,18 +37,59 @@ function stripGenerateBlock(text: string): string {
   return text.replace(/```generate\s*\n[\s\S]*?\n```/g, '').trim();
 }
 
-export function ChatView() {
+export function ChatView({ initialSessionId, onSessionReady }: Props) {
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [history, setHistory] = useState<ChatMsg[]>([]);
   const [streaming, setStreaming] = useState(false);
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(initialSessionId || null);
+  const [loading, setLoading] = useState(!!initialSessionId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const generatedRef = useRef<Set<string>>(new Set());
 
-  // Create session on mount
+  // Load existing session or create new one
   useEffect(() => {
-    createSession().then((s) => setSessionId(s.id)).catch(() => {});
-  }, []);
+    if (initialSessionId) {
+      getSessionDetail(initialSessionId)
+        .then((session) => {
+          const uiMsgs: UIMessage[] = [];
+          const hist: ChatMsg[] = [];
+
+          for (const msg of session.messages) {
+            const id = nextId();
+            const uiMsg: UIMessage = {
+              id,
+              role: msg.role as 'user' | 'assistant',
+              content: msg.content,
+            };
+            if (msg.job_id && msg.job) {
+              uiMsg.jobId = msg.job.id;
+            }
+            uiMsgs.push(uiMsg);
+            hist.push({ role: msg.role as 'user' | 'assistant', content: msg.content });
+          }
+
+          setMessages(uiMsgs);
+          setHistory(hist);
+          setSessionId(initialSessionId);
+          setLoading(false);
+        })
+        .catch(() => {
+          // Session not found — create new
+          createSession().then((s) => {
+            setSessionId(s.id);
+            onSessionReady?.(s.id);
+            setLoading(false);
+          });
+        });
+    } else {
+      createSession()
+        .then((s) => {
+          setSessionId(s.id);
+          onSessionReady?.(s.id);
+        })
+        .catch(() => {});
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scrollToBottom = useCallback(() => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
@@ -65,10 +111,8 @@ export function ChatView() {
         setMessages((prev) => prev.map((m) =>
           m.id === msgId ? { ...m, jobId: job_id, generating: false } : m
         ));
-        // Update the assistant message in DB with the job_id
         if (sessionId) {
-          // Save a note that this message triggered a generation
-          saveMessage(sessionId, 'assistant', `[Generated animation: ${parsed.prompt}]`, job_id).catch(() => {});
+          saveMessage(sessionId, 'assistant', `[Generated: ${parsed.prompt}]`, job_id).catch(() => {});
         }
       } catch (err) {
         setMessages((prev) => [
@@ -86,7 +130,6 @@ export function ChatView() {
 
     setMessages((prev) => [...prev, userMsg, assistantMsg]);
 
-    // Persist user message
     if (sessionId) {
       saveMessage(sessionId, 'user', text).catch(() => {});
     }
@@ -121,7 +164,6 @@ export function ChatView() {
             m.id === assistantId ? { ...m, content: display } : m
           ));
 
-          // Persist assistant message
           if (sessionId) {
             saveMessage(sessionId, 'assistant', display).catch(() => {});
           }
@@ -148,6 +190,19 @@ export function ChatView() {
   const handleFileSelect = useCallback((_file: File) => {
     handleSend('I want to extract motion capture from this video.');
   }, [handleSend]);
+
+  if (loading) {
+    return (
+      <div className="chat-view">
+        <div className="chat-messages">
+          <div className="chat-empty">
+            <div className="anim-card__spinner" />
+            <p className="lede">Loading session...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="chat-view">
