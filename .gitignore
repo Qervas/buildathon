@@ -10,4 +10,5 @@ output/playwright/
 fe/dist/
 fe/node_modules/
 .DS_Store
-docker-compose.yml
+docker-compose.ymlmodal/services/__pycache__/
+__pycache__/
