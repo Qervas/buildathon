@@ -1,144 +1,61 @@
-# ohao — Pitch Opener (30s video) + Post-Pitch Full Video (90s)
+# ohao — Pitch Opener (15-20s)
+
+> **Purpose:** Emotional hook. Plays before you speak. Sets the problem in the audience's gut.
+> **Then you take the stage for 6.5 minutes.**
 
 ---
 
-## VIDEO 1: Pitch Opener (30 seconds)
+## The Video (15-20s) — 2 Grok clips
 
-> **Purpose:** Opens the 7-minute pitch. Sets the mood, then you take over live.
-> **Plays before you speak a single word.**
-
-### Clip 1 (10s) — The Beautiful Problem
+### Clip 1 (10s) — Beauty + Pain
 
 **Grok prompt:**
-> Cinematic slow dolly through a stunning fantasy game world, volumetric god rays, floating particles. But every 3D character is frozen in T-pose, completely lifeless. Camera glides past them. Unreal Engine 5 quality. Melancholic. 16:9.
+> Cinematic slow dolly through a breathtaking fantasy game world with volumetric lighting. Multiple 3D characters frozen in T-pose, lifeless. Camera glides past them. Then slowly dissolves to a lone developer at their desk at night, staring at the frozen character on screen. Melancholic. Unreal Engine 5. 16:9.
 
 **Text overlay:**
 - 0:00 — *"$205 billion industry."*
-- 0:05 — *"Every world needs characters that move."*
+- 0:05 — *"Animation costs $2,500 a day."*
 
-### Clip 2 (10s) — The Cost Wall, extend from Clip 1
-
-**Grok prompt:**
-> Camera pushes into a close-up of a frozen T-pose warrior character, beautiful armor but lifeless. Then dissolve to a lone indie developer at their desk late at night, face lit by monitor showing the frozen character. Frustrated. Cinematic. 16:9.
-
-**Text overlay:**
-- 0:10 — *"Motion capture: $2,500 / day."*
-- 0:15 — *"Most indie devs make 2D games."*
-
-### Clip 3 (6s) — The Question
+### Clip 2 (6-10s) — The Turn, extend from Clip 1
 
 **Grok prompt:**
-> Dark cinematic shot slowly pulling back from the indie developer's screen. The room goes darker. Atmospheric, tense, quiet moment before something changes. 16:9.
+> The developer's room goes dark. Screen fades. A brief moment of silence. Then a faint glow — something new appearing on screen. Hopeful. Atmospheric tension breaking. 16:9.
 
 **Text overlay:**
-- 0:20 — *"Not by choice."*
-- 0:23 — Black screen
-- 0:24 — *"What if it cost $0.002?"*
-
-### End (4s) — Transition to live
-
-- 0:26 — Black screen
-- 0:27 — *"ohao"* fades in
-- 0:28 — *"Let us show you."*
-- 0:30 — You start talking. Switch to slides / live demo.
-
-**Grok clips needed: 3 (10s + 10s extend + 6s extend) = one chained generation**
+- 0:10 — *"Most indie devs make 2D games. Not by choice."*
+- 0:14 — Black
+- 0:15 — *"What if it cost $0.002?"*
+- 0:17 — **ohao**
+- 0:19 — Fade to black. You start talking.
 
 ---
 
-## PITCH FLOW (7 minutes total)
+## That's it. One chained Grok generation. ~10 min to produce.
 
-| Time | What | Notes |
-|------|------|-------|
-| 0:00-0:30 | **Play video opener** | Lights down, let it play, don't talk over it |
-| 0:30-1:30 | **"Hi, we're ohao"** + Solution slide | "What you just saw is the problem. Here's what we built." |
-| 1:30-3:30 | **Live Demo** | Type prompt → skeleton dances → show Blender → show MCP |
-| 3:30-4:30 | **Market slide** | $205B game industry, cost comparison chart, 150,000x cheaper |
-| 4:30-5:15 | **Access pyramid + indie stats** | "55% solo, 50% self-funded. We open the gate." |
-| 5:15-5:45 | **Moat + ecosystem** | Cloudflare analogy. MCP + A2A + Blender. |
-| 5:45-6:15 | **Business model** | $29/mo Pro, 96.5% margin |
-| 6:15-6:45 | **Our duty** | "We don't wait for AI to be perfect. We deliver what exists." |
-| 6:45-7:00 | **Thank you** | "Most indie devs make 2D games not by choice. We change that." |
+Then you have the stage:
 
----
-
-## VIDEO 2: Full Commercial (90s) — Post-pitch / landing page / social
-
-> **Purpose:** Shareable after the buildathon. Embed on landing page. Post on X/LinkedIn.
-> **Standalone — includes the product demo.**
-
-### Scene 1: The Problem (0:00-0:24) — reuse pitch opener clips
-
-Same 3 Grok clips from the pitch opener above (Clips 1, 2, 3).
-
-### Scene 2: The Reveal (0:24-0:28)
-
-Black screen → *"What if it cost $0.002?"* → cut to product
-
-### Scene 3: The Product (0:28-0:50) — screen recording
-
-| Time | What to record | Text overlay |
-|------|---------------|--------------|
-| 0:28-0:32 | Chat UI, type: "a person doing a victory dance" | *"Type a sentence."* |
-| 0:32-0:36 | Loading bar: "Generating on GPU..." | *"30 seconds."* |
-| 0:36-0:42 | BVH viewer — skeleton dances, orbit camera | *"Get a skeleton animation."* |
-| 0:42-0:45 | Blender sidebar → skeleton in viewport | *"In Blender."* |
-| 0:45-0:47 | Terminal: MCP tool call | *"In your AI agent."* |
-| 0:47-0:50 | Gallery: past animations with previews | *"Every result saved."* |
-
-### Scene 4: The Vision (0:50-1:10) — 3 new Grok clips
-
-**Clip 4a (10s):**
-> Fast-paced cinematic montage of video game characters with fluid professional animation: fantasy knight sword combo, ninja acrobatic flips, zombie lurching realistically. Dynamic cameras, AAA quality, vibrant. 16:9.
-
-**Clip 4b (6s) — extend from 4a:**
-> Continue montage: sports slam dunk with full body physics, dance game choreography, horror monster crawling on ceiling. All incredibly fluid animation. 16:9.
-
-**Clip 4c (6s):**
-> Young game developer leaning back in chair, smiling with pride. Monitor shows a beautiful 3D game with animated characters. Small bedroom, warm golden light. Genuine accomplishment. 16:9.
-
-**Text overlays:**
-- 0:50 — *"Games that couldn't exist before."*
-- 0:58 — *"Now they can."*
-- 1:04 — *"Not just for AAA studios. For everyone."*
-
-### Scene 5: The Brand (1:10-1:30)
-
-**Clip 5 (6s):**
-> Abstract particles of golden light converging in dark space. Premium, elegant, minimal. 16:9.
-
-**Then text in editor:**
-- 1:16 — **ohao** fades in large
-- 1:19 — *"Type a sentence. Get a skeleton animation."*
-- 1:22 — *"buildathon-bii.pages.dev"*
-- 1:26 — *"$0.002 per animation. 77 joints. 30 fps."*
+| Time | You say / do |
+|------|-------------|
+| 0:00-0:20 | Video plays. You stand silent. |
+| 0:20-0:40 | *"Hi. We're ohao. What you just saw — that's real. Animation is the gate that keeps most indie devs in 2D. We built the key."* |
+| 0:40-2:40 | **Live demo.** Type prompt → skeleton dances → Blender → MCP. |
+| 2:40-3:40 | Market: $205B industry, cost comparison, 100,000x cheaper. |
+| 3:40-4:20 | Access pyramid: who can animate before/after ohao. |
+| 4:20-5:00 | Moat: Cloudflare of open-source AI. Cross-model pipelines. |
+| 5:00-5:30 | Business model: $29/mo, 96.5% margin. |
+| 5:30-6:15 | Ecosystem: MCP, Blender, REST API. A2A coming. |
+| 6:15-6:45 | *"AI coding agents proved: give AI a hard problem, it solves it 100x faster. We apply that to creative production. We don't wait for AI to be perfect. We deliver what exists."* |
+| 6:45-7:00 | *"Most indie devs make 2D games — not by choice. We're here to change that. Thank you."* |
 
 ---
 
-## Production Summary
+## Post-Pitch: Full 60s Video (for landing page / social)
 
-### For the pitch opener (30s) — do this FIRST
-- 1 chained Grok generation (10s → extend 10s → extend 6s)
-- Add text overlays + "ohao / Let us show you" ending in editor
-- **~15 min to produce**
+Make this **after** the pitch if you have time. Reuse the opener + add:
 
-### For the full commercial (90s) — do this after
-- Reuse pitch opener clips (scenes 1-2)
-- Record screen (1 take, ~22s)
-- 3 more Grok clips for vision scene
-- 1 Grok clip for brand
-- Stitch + overlays in editor
-- **~45 min to produce**
+- Screen recording of the product demo (20s)
+- Grok montage of games with fluid animation (10s)
+- Grok happy dev moment (6s)
+- Brand card with URL (10s)
 
-### Total Grok generations: 7 clips
-| Clip | Duration | What |
-|------|----------|------|
-| 1 | 10s | Frozen T-pose world |
-| 2 | 10s | Extend → frozen warrior → indie dev |
-| 3 | 6s | Extend → dev's dark room, tension |
-| 4a | 10s | Game montage: knight, ninja, zombie |
-| 4b | 6s | Extend → sports, dance, horror |
-| 4c | 6s | Happy dev with finished game |
-| 5 | 6s | Abstract particles brand reveal |
-
-**Priority: Generate clips 1-3 first (pitch opener). The rest is bonus.**
+Not urgent. The pitch opener is all you need right now.
