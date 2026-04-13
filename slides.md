@@ -76,7 +76,7 @@ What "open-source AI" looks like for 99% of creators
 </div>
 
 <!--
-The models exist. NVIDIA released Kimodo. Microsoft released TRELLIS. But nobody can use them.
+The models exist. World-class open-source AI for animation, 3D, music. But nobody can use them.
 -->
 
 ---
@@ -92,13 +92,13 @@ Type a sentence. Get a skeleton animation.
 <div class="bg-gray-800 rounded-lg p-5 text-center">
 <div class="text-3xl mb-3">📝</div>
 <div class="font-bold text-blue-400 mb-2">Text to Motion</div>
-<div class="text-sm text-gray-400">"person doing a victory dance" → 77-joint SOMA skeleton. NVIDIA Kimodo.</div>
+<div class="text-sm text-gray-400">"person doing a victory dance" → 77-joint SOMA skeleton. open-source AI.</div>
 </div>
 
 <div class="bg-gray-800 rounded-lg p-5 text-center">
 <div class="text-3xl mb-3">📱</div>
 <div class="font-bold text-green-400 mb-2">Video Motion Capture</div>
-<div class="text-sm text-gray-400">Upload any phone video → professional BVH. No suit. NVIDIA GEM-X.</div>
+<div class="text-sm text-gray-400">Upload any phone video → professional BVH. No suit. open-source AI.</div>
 </div>
 
 <div class="bg-gray-800 rounded-lg p-5 text-center">
@@ -130,7 +130,7 @@ Let's generate an animation right now.
 
 <!--
 1. Open chat → type "a person doing a victory dance" → 3s duration → Generate
-2. While loading (~30s): "NVIDIA Kimodo on an A10G GPU. 77-joint skeleton from 5 words."
+2. While loading (~30s): "Open-source AI on a cloud GPU. 77-joint skeleton from 5 words."
 3. Skeleton starts dancing. LET THE AUDIENCE REACT. Don't talk over it.
 4. "30fps, industry-standard BVH. Import into Blender, Unity, Unreal."
 5. Show Blender plugin: sidebar → Generate Motion → skeleton appears in viewport.
@@ -186,8 +186,8 @@ Sweden: **#1 game-producing per capita** · 900+ studios · Minecraft, Battlefie
 
 <div class="bg-green-900/30 border border-green-500/30 rounded-lg p-3">
 <div class="text-green-400 font-bold">ohao (tested on buildathon day)</div>
-<div class="text-green-300">Text→motion: ~$0.002 (5s GPU)</div>
-<div class="text-green-300">Video→mocap: ~$0.04 (120s GPU)</div>
+<div class="text-green-300">Text→animation: ~$0.002</div>
+<div class="text-green-300">Video→mocap: ~$0.04</div>
 <div class="text-green-400 font-bold mt-1">100,000x cheaper.</div>
 </div>
 
@@ -277,7 +277,6 @@ We're the <span class="text-blue-400">Cloudflare</span> of open-source AI. <span
 <div class="text-3xl font-bold mb-2">$29<span class="text-lg">/mo</span></div>
 <div class="text-sm text-gray-400">Unlimited text-to-motion</div>
 <div class="text-sm text-gray-400">100 video captures</div>
-<div class="text-xs text-green-400 mt-2">96.5% margin</div>
 </div>
 
 <div class="bg-gray-800 rounded-lg p-6 text-center border border-orange-500">
@@ -290,7 +289,7 @@ We're the <span class="text-blue-400">Cloudflare</span> of open-source AI. <span
 </div>
 
 <div class="mt-8 text-sm text-gray-500">
-Unit economics: $0.002/generation cost at $29/mo = massive margin. Target: 500K+ indie devs globally.
+Cost per generation: fractions of a cent. Unit economics work at every tier. Target: 500K+ indie devs globally.
 </div>
 
 ---
@@ -305,7 +304,7 @@ Unit economics: $0.002/generation cost at $29/mo = massive margin. Target: 500K+
 
 <div class="flex items-center gap-3">
 <div class="text-green-400 text-lg">✓</div>
-<div><strong>2 NVIDIA GPU services</strong> on Modal<br><span class="text-sm text-gray-400">Kimodo (text→motion) + GEM-X (video→mocap)</span></div>
+<div><strong>2 GPU inference services</strong> on serverless cloud<br><span class="text-sm text-gray-400">Text→motion + Video→mocap, open-source models</span></div>
 </div>
 
 <div class="flex items-center gap-3">
@@ -336,11 +335,11 @@ Unit economics: $0.002/generation cost at $29/mo = massive margin. Target: 500K+
 
 <div class="text-green-400">$ text2motion "victory dance" 4s</div>
 <div class="text-blue-400">→ 120 frames @ 30fps</div>
-<div class="text-blue-400 mb-3">→ 5s GPU · $0.002</div>
+<div class="text-blue-400 mb-3">→ ~$0.002</div>
 
 <div class="text-green-400">$ video_mocap walk.mp4</div>
 <div class="text-blue-400">→ 255 frames @ 30fps</div>
-<div class="text-blue-400 mb-3">→ 118s GPU · $0.04</div>
+<div class="text-blue-400 mb-3">→ ~$0.04</div>
 
 <div class="text-gray-500">4 distribution channels:</div>
 <div class="text-gray-400">Web · API · MCP · Blender</div>
