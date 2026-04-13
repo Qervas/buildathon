@@ -520,17 +520,49 @@ Unit economics: text-to-motion costs ~$0.001/generation (5s GPU @ $0.58/hr). Mas
 
 ---
 
-# Vision
+# The Bigger Picture
 
-<div class="text-2xl font-bold text-blue-400 mt-8 mb-8">
-Every time a breakthrough open-source model is released,<br>we deliver it to the world within days.
+<div class="text-xl text-gray-400 mb-8">AI coding agents proved the model works.</div>
+
+<v-clicks>
+
+<div class="text-lg mb-6">
+Claude Code, Cursor, Codex — AI agents that help engineers solve complex problems. Their growth is <strong class="text-green-400">exponential</strong>. That proved something:
 </div>
 
-<div class="grid grid-cols-4 gap-4">
+<div class="text-2xl font-bold mb-6">
+Give AI a hard problem + the right tools = <span class="text-blue-400">100x faster</span>.
+</div>
+
+<div class="text-lg mb-6">
+But everyone is building chatbots and text generators. The real opportunity is applying this to <strong class="text-orange-400">compound creative problems</strong> that were previously impossible for individuals.
+</div>
+
+<div class="text-lg">
+3D game production is one of those problems. Animation, rigging, 3D modeling, music — each one is a <strong>months-long bottleneck</strong>. We eliminate them one by one.
+</div>
+
+</v-clicks>
+
+---
+
+# Our Duty
+
+<div class="mt-8 mb-8">
+
+<div class="text-2xl leading-relaxed">
+We don't wait for AI to be perfect.<br>
+We don't complain about "AI slop."<br><br>
+<strong class="text-3xl text-green-400">We take what exists today — and deliver it to people who need it.</strong>
+</div>
+
+</div>
+
+<div class="grid grid-cols-4 gap-4 mt-8">
 
 <div class="bg-green-900/30 border border-green-500/30 rounded-lg p-4 text-center">
 <div class="font-bold text-green-400">Today</div>
-<div class="text-sm text-gray-400 mt-2">Animation<br>Kimodo · GEM-X</div>
+<div class="text-sm text-gray-400 mt-2">Animation<br>Kimodo + GEM-X</div>
 </div>
 
 <div class="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4 text-center">
@@ -540,19 +572,18 @@ Every time a breakthrough open-source model is released,<br>we deliver it to the
 
 <div class="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4 text-center">
 <div class="font-bold text-purple-400">Future</div>
-<div class="text-sm text-gray-400 mt-2">Physics sim · Facial<br>Voice · Video</div>
+<div class="text-sm text-gray-400 mt-2">Full game asset<br>pipeline</div>
 </div>
 
 <div class="bg-orange-900/30 border border-orange-500/30 rounded-lg p-4 text-center">
-<div class="font-bold text-orange-400">Distribution</div>
-<div class="text-sm text-gray-400 mt-2">Web · API · MCP<br>Blender · Unity</div>
+<div class="font-bold text-orange-400">Vision</div>
+<div class="text-sm text-gray-400 mt-2">Every creator can<br>make 3D games</div>
 </div>
 
 </div>
 
-<div class="mt-12 text-xl text-center">
-The model landscape changes every month.<br>
-<strong>We are the constant — the platform that makes it all accessible.</strong>
+<div class="mt-8 text-sm text-gray-500">
+The model landscape changes every month. We are the constant — the platform that delivers it.
 </div>
 
 ---
@@ -564,7 +595,14 @@ class: text-center
 
 <div class="text-2xl text-gray-400 mt-4 mb-8">Team ohao</div>
 
-<div class="text-lg">
+<div class="text-lg mb-8">
+
+*"Most indie devs make 2D games — not by choice, but because 3D is too hard.*
+*We're here to change that."*
+
+</div>
+
+<div class="text-md">
 
 Looking for: **beta users** · **game studio partnerships** · **API feedback**
 

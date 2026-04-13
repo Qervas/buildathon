@@ -202,6 +202,23 @@ cd mcp-server && npm i && npm run build`}</pre>
         </div>
       </section>
 
+      {/* ── Manifesto ── */}
+      <section className="land__manifesto">
+        <p className="land__manifesto-text">
+          AI coding agents proved the model: give AI a hard problem, it solves it 100x faster.
+          But most AI products are chatbots and text generators.
+        </p>
+        <p className="land__manifesto-text">
+          The real opportunity is <strong>compound creative problems</strong> — like 3D game production.
+          Animation, rigging, modeling, music — each one is a months-long bottleneck.
+        </p>
+        <p className="land__manifesto-bold">
+          We don't wait for AI to be perfect. We take what exists today and deliver it to
+          people who need it. Most indie devs make 2D games — not by choice, but because
+          3D is too hard. We're here to change that.
+        </p>
+      </section>
+
       {/* ── Footer ── */}
       <footer className="land__footer">
         <span className="land__wordmark">ohao</span>
