@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════
+   Animated Charts & Comparisons
+   ═══════════════════════════════════════ */
+
+/* Cost Bar Chart */
+.cost-chart { padding: 8px 0; }
+
+.cost-chart__row {
+  display: grid;
+  grid-template-columns: 140px 1fr 130px;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.cost-chart__label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(21,21,21,0.7);
+  text-align: right;
+}
+
+.cost-chart__track {
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(21,21,21,0.04);
+  overflow: hidden;
+}
+
+.cost-chart__fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 2px;
+}
+
+.cost-chart__value {
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Time Comparison */
+.time-comp { padding: 8px 0; display: flex; flex-direction: column; gap: 16px; }
+
+.time-comp__row {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-comp__label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: rgba(21,21,21,0.7);
+  text-align: right;
+}
+
+.time-comp__bar-wrap {
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(21,21,21,0.04);
+  overflow: hidden;
+}
+
+.time-comp__bar {
+  height: 100%;
+  border-radius: 8px;
+  display: flex;
+  transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.time-comp__bar--old {
+  background: linear-gradient(90deg, #dc2626, #f97316, #eab308, #f97316, #dc2626);
+}
+
+.time-comp__bar--new {
+  background: #4ade80;
+}
+
+.time-comp__phase {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  border-right: 1px solid rgba(255,255,255,0.2);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.time-comp__phase:last-child { border-right: none; }
+
+.time-comp__duration {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: rgba(21,21,21,0.8);
+}
+
+/* Access Pyramid */
+.pyramid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  padding: 8px 0;
+}
+
+.pyramid__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.pyramid__heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(21,21,21,0.4);
+  margin-bottom: 8px;
+}
+
+.pyramid__tier {
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: white;
+  transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pyramid__check {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.pyramid__x {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+@media (max-width: 640px) {
+  .cost-chart__row { grid-template-columns: 100px 1fr 90px; gap: 8px; }
+  .cost-chart__label, .cost-chart__value { font-size: 0.72rem; }
+  .time-comp__row { grid-template-columns: 100px 1fr 80px; gap: 8px; }
+  .pyramid { grid-template-columns: 1fr; gap: 24px; }
+}

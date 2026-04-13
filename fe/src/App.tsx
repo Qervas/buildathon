@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { BvhPlayer } from './components/BvhPlayer';
 import { ChatView } from './components/chat/ChatView';
 import { Gallery } from './components/chat/Gallery';
+import { CostChart, TimeComparison, AccessPyramid } from './components/CostChart';
 
 const API_BASE = 'https://backend-production-b095.up.railway.app';
 
@@ -108,6 +109,39 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
             </p>
           </div>
         </div>
+      </section>
+
+      {/* ── Why It Matters ── */}
+      <section className="land__section">
+        <div className="land__section-header">
+          <span className="land__label">The Problem</span>
+          <h2>Animation is the bottleneck</h2>
+          <p className="land__section-sub">
+            Most indie devs make 2D games — not because they want to, but because
+            3D animation is too expensive. We change that.
+          </p>
+        </div>
+        <CostChart />
+      </section>
+
+      <section className="land__section">
+        <div className="land__section-header">
+          <span className="land__label">Speed</span>
+          <h2>Weeks to seconds</h2>
+        </div>
+        <TimeComparison />
+      </section>
+
+      <section className="land__section">
+        <div className="land__section-header">
+          <span className="land__label">Access</span>
+          <h2>Animation for everyone</h2>
+          <p className="land__section-sub">
+            55% of indie devs are solo. 50% are self-funded. They can't afford
+            $2,500/day studios. Now they don't have to.
+          </p>
+        </div>
+        <AccessPyramid />
       </section>
 
       {/* ── Protocols ── */}
