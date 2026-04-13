@@ -49,13 +49,60 @@ Then you have the stage:
 
 ---
 
-## Post-Pitch: Full 60s Video (for landing page / social)
+---
 
-Make this **after** the pitch if you have time. Reuse the opener + add:
+# ohao — 30 Second Ad (landing page / social)
 
-- Screen recording of the product demo (20s)
-- Grok montage of games with fluid animation (10s)
-- Grok happy dev moment (6s)
-- Brand card with URL (10s)
+> **Standalone. Fast-paced. Every second counts.**
+> **No voiceover — just text + visuals + music.**
 
-Not urgent. The pitch opener is all you need right now.
+### Clip A (6s) — The Pain
+
+**Grok prompt:**
+> Cinematic fast montage: frozen T-pose game characters in beautiful environments, quick cuts between different game worlds — fantasy, sci-fi, horror — all characters lifeless and stiff. Urgent, dramatic. 16:9.
+
+**Text:** *"Animation costs $2,500/day. Most indie devs can't afford it."*
+
+### Clip B (6s) — The Product, extend from A
+
+**Screen recording, sped up 2x:**
+Type prompt → loading → skeleton dances. Fast and punchy.
+
+**Text:** *"Type a sentence."*
+
+### Clip C (6s) — The Skeleton Dancing
+
+**Screen recording, normal speed:**
+The BVH viewer with skeleton dancing. The hero shot. Let it breathe.
+
+**Text:** *"$0.002. 30 seconds. 77 joints."*
+
+### Clip D (6s) — Where It Works
+
+**Screen recording, quick cuts (1.5s each):**
+Blender sidebar → MCP terminal → Gallery with previews → Chat interface
+
+**Text:** *"Blender. AI Agents. API. Everywhere."*
+
+### Clip E (6s) — The Close
+
+**Grok prompt:**
+> Young game developer smiling at screen showing a vibrant 3D game with animated characters. Warm light. Joy. Then fade to dark. 16:9.
+
+**Text:**
+- *"Animation for everyone."*
+- **ohao**
+- *buildathon-bii.pages.dev*
+
+---
+
+## Production Summary
+
+| What | Clips | Time to make |
+|------|-------|-------------|
+| **Pitch opener (15-20s)** | 1 Grok chain (2 clips) | ~10 min |
+| **30s ad** | 2 Grok clips + 3 screen recordings | ~30 min |
+
+**Do the pitch opener first. Then the 30s ad.**
+
+The screen recordings for the ad overlap — record one clean demo session, cut it three ways for clips B, C, D.
