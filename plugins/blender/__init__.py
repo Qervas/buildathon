@@ -4,6 +4,7 @@ Generate skeletal animations from text or extract motion capture from video.
 All processing runs on cloud GPUs via the ohao API.
 
 Install: Edit > Preferences > Add-ons > Install... > select this folder
+Shortcut: Ctrl+Shift+M for quick generate popup
 """
 
 bl_info = {
@@ -11,13 +12,13 @@ bl_info = {
     "author": "Team ohao",
     "version": (0, 1, 0),
     "blender": (4, 0, 0),
-    "location": "View3D > Sidebar > ohao",
+    "location": "View3D > Sidebar > ohao | Ctrl+Shift+M",
     "description": "AI text-to-motion and video motion capture",
     "category": "Animation",
 }
 
 import bpy
-from bpy.props import StringProperty, FloatProperty
+from bpy.props import StringProperty, FloatProperty, BoolProperty
 import json
 import os
 import threading
@@ -47,10 +48,8 @@ def api_get(path, timeout=30):
 
 
 def download_bvh(result_url):
-    """Download BVH via the media redirect endpoint."""
     url = f"{API_BASE}{result_url}"
     req = Request(url, method="GET")
-    # Follow redirect to R2 presigned URL
     with urlopen(req, timeout=60) as resp:
         data = resp.read()
     tmp = tempfile.NamedTemporaryFile(suffix=".bvh", delete=False)
@@ -59,31 +58,15 @@ def download_bvh(result_url):
     return tmp.name
 
 
-def poll_job(job_id, timeout_s=180):
-    """Poll until job completes or fails."""
-    start = time.time()
-    while time.time() - start < timeout_s:
-        job = api_get(f"/api/jobs/{job_id}")
-        status = job.get("status", "")
-        if status == "completed":
-            return job
-        if status == "failed":
-            raise RuntimeError(job.get("error", "Job failed"))
-        time.sleep(3)
-    raise RuntimeError(f"Job {job_id} timed out after {timeout_s}s")
-
-
 def import_bvh_on_main_thread(filepath):
-    """Schedule BVH import on Blender's main thread."""
     def _do():
         try:
             bpy.ops.import_anim.bvh(filepath=filepath, frame_start=1)
-            # Select the imported armature
             for obj in bpy.context.selected_objects:
                 if obj.type == 'ARMATURE':
                     bpy.context.view_layer.objects.active = obj
                     break
-            print(f"ohao: BVH imported from {filepath}")
+            print(f"ohao: BVH imported")
         except Exception as e:
             print(f"ohao: BVH import failed: {e}")
         finally:
@@ -92,18 +75,138 @@ def import_bvh_on_main_thread(filepath):
             except OSError:
                 pass
         return None
-
     bpy.app.timers.register(_do, first_interval=0.1)
 
 
+# ── Shared generation state ─────────────────────────────────────────
+
+_gen_state = {
+    "running": False,
+    "stage": "",
+    "elapsed": 0,
+    "start_time": 0,
+    "error": "",
+    "done": False,
+}
+
+
+def _draw_header_status(self, context):
+    """Draw generation status in the 3D viewport header."""
+    if not _gen_state["running"] and not _gen_state["done"]:
+        return
+    layout = self.layout
+    if _gen_state["running"]:
+        elapsed = int(time.time() - _gen_state["start_time"])
+        layout.label(text=f"ohao: {_gen_state['stage']} ({elapsed}s)", icon='SORTTIME')
+    elif _gen_state["done"]:
+        if _gen_state["error"]:
+            layout.label(text=f"ohao: {_gen_state['error']}", icon='ERROR')
+        else:
+            layout.label(text=f"ohao: {_gen_state['stage']}", icon='CHECKMARK')
+
+
+# ── Modal timer that keeps the UI alive during generation ────────────
+
+class OHAO_OT_ProgressTimer(bpy.types.Operator):
+    """Keeps viewport refreshing while animation generates on GPU"""
+    bl_idname = "ohao.progress_timer"
+    bl_label = "ohao Progress"
+
+    _timer = None
+
+    def modal(self, context, event):
+        if event.type == 'TIMER':
+            # Force viewport redraw to update header status
+            for area in context.screen.areas:
+                if area.type == 'VIEW_3D':
+                    area.tag_redraw()
+
+            if not _gen_state["running"]:
+                self.cancel(context)
+                return {'FINISHED'}
+
+        return {'PASS_THROUGH'}
+
+    def execute(self, context):
+        wm = context.window_manager
+        self._timer = wm.event_timer_add(0.5, window=context.window)
+        wm.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+    def cancel(self, context):
+        if self._timer:
+            context.window_manager.event_timer_remove(self._timer)
+
+
 # ── Operators ────────────────────────────────────────────────────────
+
+def _run_generation(prompt, duration):
+    """Shared generation logic — runs in background thread."""
+    _gen_state["running"] = True
+    _gen_state["start_time"] = time.time()
+    _gen_state["stage"] = "Submitting to GPU..."
+    _gen_state["error"] = ""
+    _gen_state["done"] = False
+
+    try:
+        result = api_post("/api/generate/text2motion", {
+            "prompt": prompt,
+            "duration": duration,
+        })
+        job_id = result.get("job_id", "")
+        if not job_id:
+            raise RuntimeError(result.get("error", "No job ID returned"))
+
+        # Poll until done
+        start = time.time()
+        while time.time() - start < 180:
+            elapsed = int(time.time() - _gen_state["start_time"])
+            if elapsed < 5:
+                _gen_state["stage"] = "Warming up GPU..."
+            elif elapsed < 15:
+                _gen_state["stage"] = "Loading Kimodo model..."
+            elif elapsed < 35:
+                _gen_state["stage"] = "Generating motion..."
+            elif elapsed < 55:
+                _gen_state["stage"] = "Denoising animation..."
+            else:
+                _gen_state["stage"] = "Finalizing BVH..."
+
+            job = api_get(f"/api/jobs/{job_id}")
+            if job.get("status") == "completed":
+                result_url = job.get("result_url", "")
+                meta = job.get("meta", {})
+                frames = meta.get("frames", "?")
+                fps = meta.get("fps", 30)
+
+                _gen_state["stage"] = "Downloading BVH..."
+                filepath = download_bvh(result_url)
+                import_bvh_on_main_thread(filepath)
+
+                _gen_state["stage"] = f"Done — {frames} frames @ {fps}fps"
+                _gen_state["running"] = False
+                _gen_state["done"] = True
+                return
+
+            if job.get("status") == "failed":
+                raise RuntimeError(job.get("error", "Job failed"))
+
+            time.sleep(2)
+
+        raise RuntimeError("Timed out after 180s")
+
+    except Exception as e:
+        _gen_state["error"] = str(e)
+        _gen_state["stage"] = f"Error: {e}"
+        _gen_state["running"] = False
+        _gen_state["done"] = True
+        print(f"ohao: Error: {e}")
+
 
 class OHAO_OT_TextToMotion(bpy.types.Operator):
     bl_idname = "ohao.text_to_motion"
     bl_label = "Generate Motion"
     bl_description = "Generate a skeletal animation from a text description (30-60s)"
-
-    _thread = None
 
     def execute(self, context):
         props = context.scene.ohao
@@ -112,39 +215,18 @@ class OHAO_OT_TextToMotion(bpy.types.Operator):
             self.report({'WARNING'}, "Describe the motion first")
             return {'CANCELLED'}
 
+        if _gen_state["running"]:
+            self.report({'WARNING'}, "Generation already in progress")
+            return {'CANCELLED'}
+
         duration = props.motion_duration
-        self.report({'INFO'}, f"Generating: '{prompt}' ({duration}s)...")
-        props.status = "Generating motion on GPU..."
+        self.report({'INFO'}, f"ohao: Generating '{prompt}' ({duration}s)...")
 
-        def _run():
-            try:
-                result = api_post("/api/generate/text2motion", {
-                    "prompt": prompt,
-                    "duration": duration,
-                })
-                job_id = result.get("job_id", "")
-                if not job_id:
-                    props.status = f"Error: {result.get('error', 'No job ID')}"
-                    return
+        # Start progress timer for UI updates
+        bpy.ops.ohao.progress_timer()
 
-                props.status = f"Processing on GPU (job {job_id[:8]}...)"
-                job = poll_job(job_id)
-
-                result_url = job.get("result_url", "")
-                meta = job.get("meta", {})
-                frames = meta.get("frames", "?")
-                fps = meta.get("fps", 30)
-
-                props.status = f"Downloading BVH ({frames} frames @ {fps}fps)..."
-                filepath = download_bvh(result_url)
-                import_bvh_on_main_thread(filepath)
-                props.status = f"Done — {frames} frames @ {fps}fps"
-
-            except Exception as e:
-                props.status = f"Error: {e}"
-                print(f"ohao: Error: {e}")
-
-        thread = threading.Thread(target=_run, daemon=True)
+        # Run generation in background thread
+        thread = threading.Thread(target=_run_generation, args=(prompt, duration), daemon=True)
         thread.start()
         return {'FINISHED'}
 
@@ -164,29 +246,28 @@ class OHAO_OT_ExtractMotion(bpy.types.Operator):
         if not self.filepath:
             return {'CANCELLED'}
 
-        props = context.scene.ohao
-        props.status = "Uploading video..."
+        if _gen_state["running"]:
+            self.report({'WARNING'}, "Generation already in progress")
+            return {'CANCELLED'}
+
+        _gen_state["running"] = True
+        _gen_state["start_time"] = time.time()
+        _gen_state["stage"] = "Uploading video..."
+        _gen_state["error"] = ""
+        _gen_state["done"] = False
+
+        bpy.ops.ohao.progress_timer()
+        video_path = self.filepath
 
         def _run():
             try:
-                # Read video
-                with open(self.filepath, 'rb') as f:
+                with open(video_path, 'rb') as f:
                     video_data = f.read()
 
                 size_mb = len(video_data) / (1024 * 1024)
-                props.status = f"Uploading {size_mb:.1f}MB..."
+                _gen_state["stage"] = f"Uploading {size_mb:.1f}MB..."
 
-                # Upload to R2 via backend
-                import base64
-                filename = os.path.basename(self.filepath)
-                # For now, use the direct video_url approach
-                # Save to temp and use a data URI (not ideal, but works for demo)
-                tmp_video = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-                tmp_video.write(video_data)
-                tmp_video.close()
-
-                # Upload via multipart
-                import urllib.request
+                filename = os.path.basename(video_path)
                 boundary = "----OhaoUpload"
                 body = (
                     f"--{boundary}\r\n"
@@ -194,11 +275,7 @@ class OHAO_OT_ExtractMotion(bpy.types.Operator):
                     f"Content-Type: video/mp4\r\n\r\n"
                 ).encode() + video_data + f"\r\n--{boundary}--\r\n".encode()
 
-                req = Request(
-                    f"{API_BASE}/api/generate/motion",
-                    data=body,
-                    method="POST",
-                )
+                req = Request(f"{API_BASE}/api/generate/motion", data=body, method="POST")
                 req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
 
                 with urlopen(req, timeout=30) as resp:
@@ -206,29 +283,48 @@ class OHAO_OT_ExtractMotion(bpy.types.Operator):
 
                 job_id = result.get("job_id", "")
                 if not job_id:
-                    props.status = f"Error: {result.get('error', 'No job ID')}"
-                    return
+                    raise RuntimeError(result.get("error", "No job ID"))
 
-                props.status = f"Extracting motion on GPU (1-2 min)..."
-                job = poll_job(job_id, timeout_s=300)
+                start = time.time()
+                while time.time() - start < 300:
+                    elapsed = int(time.time() - _gen_state["start_time"])
+                    if elapsed < 10:
+                        _gen_state["stage"] = "Preprocessing video..."
+                    elif elapsed < 30:
+                        _gen_state["stage"] = "Running GEM-X pose estimation..."
+                    elif elapsed < 90:
+                        _gen_state["stage"] = "Extracting SOMA skeleton..."
+                    else:
+                        _gen_state["stage"] = "Exporting BVH..."
 
-                result_url = job.get("result_url", "")
-                meta = job.get("meta", {})
-                frames = meta.get("frames", "?")
-                fps = meta.get("fps", 30)
+                    job = api_get(f"/api/jobs/{job_id}")
+                    if job.get("status") == "completed":
+                        result_url = job.get("result_url", "")
+                        meta = job.get("meta", {})
+                        frames = meta.get("frames", "?")
+                        fps = meta.get("fps", 30)
 
-                props.status = f"Downloading BVH ({frames} frames @ {fps}fps)..."
-                filepath = download_bvh(result_url)
-                import_bvh_on_main_thread(filepath)
-                props.status = f"Done — {frames} frames @ {fps}fps"
+                        _gen_state["stage"] = "Downloading BVH..."
+                        filepath = download_bvh(result_url)
+                        import_bvh_on_main_thread(filepath)
+                        _gen_state["stage"] = f"Done — {frames} frames @ {fps}fps"
+                        _gen_state["running"] = False
+                        _gen_state["done"] = True
+                        return
 
-                os.unlink(tmp_video.name)
+                    if job.get("status") == "failed":
+                        raise RuntimeError(job.get("error", "Job failed"))
+                    time.sleep(3)
+
+                raise RuntimeError("Timed out after 300s")
             except Exception as e:
-                props.status = f"Error: {e}"
+                _gen_state["error"] = str(e)
+                _gen_state["stage"] = f"Error: {e}"
+                _gen_state["running"] = False
+                _gen_state["done"] = True
                 print(f"ohao: Error: {e}")
 
-        thread = threading.Thread(target=_run, daemon=True)
-        thread.start()
+        threading.Thread(target=_run, daemon=True).start()
         return {'FINISHED'}
 
 
@@ -239,16 +335,14 @@ class OHAO_OT_TestConnection(bpy.types.Operator):
     def execute(self, context):
         try:
             result = api_get("/")
-            context.scene.ohao.status = f"Connected: {result.get('status', 'OK')}"
-            self.report({'INFO'}, "Connected to ohao API")
+            self.report({'INFO'}, f"ohao: Connected — {result.get('status', 'OK')}")
         except Exception as e:
-            context.scene.ohao.status = f"Connection failed"
-            self.report({'ERROR'}, f"Connection failed: {e}")
+            self.report({'ERROR'}, f"ohao: Connection failed — {e}")
         return {'FINISHED'}
 
 
 class OHAO_OT_QuickGenerate(bpy.types.Operator):
-    """Quick popup to generate motion — press Ctrl+Shift+M"""
+    """Quick popup — Ctrl+Shift+M"""
     bl_idname = "ohao.quick_generate"
     bl_label = "ohao: Generate Motion"
 
@@ -262,6 +356,8 @@ class OHAO_OT_QuickGenerate(bpy.types.Operator):
         layout = self.layout
         layout.prop(self, "prompt", text="Describe motion")
         layout.prop(self, "duration")
+        if _gen_state["running"]:
+            layout.label(text=_gen_state["stage"], icon='SORTTIME')
 
     def execute(self, context):
         if not self.prompt.strip():
@@ -288,10 +384,6 @@ class OhaoProperties(bpy.types.PropertyGroup):
         min=1.0,
         max=10.0,
     )
-    status: StringProperty(
-        name="Status",
-        default="Ready",
-    )
 
 
 # ── Panel ────────────────────────────────────────────────────────────
@@ -307,29 +399,43 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
         layout = self.layout
         props = context.scene.ohao
 
-        # Status
-        row = layout.row()
-        row.label(text=props.status, icon='INFO')
-
-        layout.separator()
+        # Status bar
+        if _gen_state["running"]:
+            elapsed = int(time.time() - _gen_state["start_time"])
+            box = layout.box()
+            box.label(text=_gen_state["stage"], icon='SORTTIME')
+            box.label(text=f"Elapsed: {elapsed}s")
+            box.separator()
+        elif _gen_state["done"]:
+            box = layout.box()
+            if _gen_state["error"]:
+                box.label(text=_gen_state["stage"], icon='ERROR')
+            else:
+                box.label(text=_gen_state["stage"], icon='CHECKMARK')
+            box.separator()
 
         # Text to Motion
         box = layout.box()
         box.label(text="Text to Motion", icon='ANIM_DATA')
         box.prop(props, "motion_prompt", text="")
         box.prop(props, "motion_duration")
-        box.operator("ohao.text_to_motion", icon='PLAY')
+        row = box.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.text_to_motion", icon='PLAY')
 
         layout.separator()
 
         # Motion Capture
         box = layout.box()
         box.label(text="Video Motion Capture", icon='CAMERA_DATA')
-        box.operator("ohao.extract_motion", text="Select Video...", icon='FILE_MOVIE')
+        row = box.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.extract_motion", text="Select Video...", icon='FILE_MOVIE')
 
         layout.separator()
 
-        # Connection test
+        # Quick access
+        layout.label(text="Shortcut: Ctrl+Shift+M", icon='EVENT_M')
         layout.operator("ohao.test_connection", text="Test Connection", icon='URL')
 
 
@@ -337,6 +443,7 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
 
 classes = (
     OhaoProperties,
+    OHAO_OT_ProgressTimer,
     OHAO_OT_TextToMotion,
     OHAO_OT_ExtractMotion,
     OHAO_OT_TestConnection,
@@ -352,7 +459,10 @@ def register():
         bpy.utils.register_class(cls)
     bpy.types.Scene.ohao = bpy.props.PointerProperty(type=OhaoProperties)
 
-    # Register Ctrl+Shift+M shortcut for quick generate popup
+    # Header status
+    bpy.types.VIEW3D_HT_header.append(_draw_header_status)
+
+    # Ctrl+Shift+M shortcut
     wm = bpy.context.window_manager
     if wm.keyconfigs.addon:
         km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
@@ -363,6 +473,8 @@ def register():
 
 
 def unregister():
+    bpy.types.VIEW3D_HT_header.remove(_draw_header_status)
+
     for km, kmi in addon_keymaps:
         km.keymap_items.remove(kmi)
     addon_keymaps.clear()
