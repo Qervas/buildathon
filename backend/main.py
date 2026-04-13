@@ -7,8 +7,7 @@ load_dotenv() # Load .env before initializing other modules
 from db import engine, Base
 from routes import generate, jobs, webhooks, media, chat, sessions
 
-# Reset DB for schema change (source column added) — will revert next commit
-Base.metadata.drop_all(bind=engine)
+# Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Buildathon API")
