@@ -245,6 +245,68 @@ Every one of these studios needs animation. We make it 100x faster and 1000x che
 
 ---
 
+# The Numbers
+
+<div class="grid grid-cols-2 gap-8 mt-4">
+
+<div>
+
+<div class="space-y-6">
+
+<div>
+<div class="text-4xl font-bold text-blue-400">$205B</div>
+<div class="text-gray-400">Global game industry (2026)</div>
+</div>
+
+<div>
+<div class="text-4xl font-bold text-green-400">$486M</div>
+<div class="text-gray-400">Motion capture market today &rarr; $1.67B by 2035</div>
+</div>
+
+<div>
+<div class="text-4xl font-bold text-purple-400">$37.9B</div>
+<div class="text-gray-400">AI in gaming by 2034 (from $4.4B today)</div>
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-sm font-bold text-gray-400 mb-4">COST COMPARISON</div>
+
+<div class="space-y-3 text-sm">
+
+<div class="bg-red-900/20 border border-red-500/20 rounded-lg p-3">
+<div class="text-red-400 font-bold">Traditional Mocap</div>
+<div class="text-gray-400">$2,500/day studio + $4,000/actor + $20/sec retargeting</div>
+</div>
+
+<div class="bg-red-900/20 border border-red-500/20 rounded-lg p-3">
+<div class="text-red-400 font-bold">Mocap Suit</div>
+<div class="text-gray-400">$2,500-$50,000 hardware + $2,145/yr software</div>
+</div>
+
+<div class="bg-green-900/30 border border-green-500/30 rounded-lg p-3">
+<div class="text-green-400 font-bold">ohao</div>
+<div class="text-green-300">$0.001 per text animation. $0.02 per video mocap.</div>
+<div class="text-green-400 font-bold mt-1">150,000x cheaper.</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!--
+Key stat for Q&A: At $29/mo Pro tier with 100 generations, our cost is $0.10. That's 99.7% margin.
+55% of indie devs are solo. 50% self-funded. They can't afford $2,500/day mocap. We give them the same quality for $0.001.
+-->
+
+---
+
 # Why Now
 
 <div class="space-y-6 mt-8">
