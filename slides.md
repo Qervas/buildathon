@@ -28,18 +28,6 @@ mdc: true
 
 ---
 
-# The Problem
-
-<div class="text-5xl leading-tight mt-12 max-w-5xl">
-Every month, a new breakthrough AI model is open-sourced.
-</div>
-
-<div class="text-5xl leading-tight mt-12">
-And nobody can use it.
-</div>
-
----
-
 # The Market
 
 <div class="grid grid-cols-2 gap-8 mt-4">
