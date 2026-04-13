@@ -1,111 +1,120 @@
-# ohao — 60 Second Commercial
+# ohao — 90 Second Commercial
 
-> **Tone:** Cinematic, aspirational. Apple product launch meets indie game dev.
-> **Music:** Minimal piano → builds hopeful. Royalty-free (Artlist/Epidemic Sound).
-> **Format:** 4-5 Grok video clips (6-10s each) + 1 screen recording. Total 60s.
+> **Tone:** Cinematic, aspirational. Apple meets indie game dev.
+> **Music:** Minimal piano → builds hopeful → drops on the product reveal.
+> **Grok:** Each scene = 2-3 chained 6-10s clips to reach 20-30s per scene.
 
 ---
 
-## CLIP 1: The Frozen World (Grok, 10s) — 0:00-0:10
+## SCENE 1: The Problem (0:00-0:30) — 3 Grok clips chained
 
-**Grok video prompt:**
-> Cinematic slow dolly shot through a beautiful fantasy game forest with volumetric god rays. Multiple 3D game characters are frozen in T-pose, completely stiff and lifeless, standing in the beautiful world. Camera moves past them. Unreal Engine 5 quality. Dramatic. 16:9 cinematic.
+**Goal:** Show the beauty of game worlds vs the pain of animation.
 
-**Text overlay (add in editor):**
+**Clip 1a (10s):**
+> Cinematic slow dolly shot through a breathtaking fantasy game forest with volumetric god rays and floating particles. Beautiful environment, but all 3D game characters are frozen stiff in T-pose. Camera glides past them. Unreal Engine 5 quality. 16:9.
+
+**Clip 1b (10s) — extend from 1a:**
+> Camera continues moving through the game world. Close-up on a warrior character frozen in T-pose, beautiful armor detail but completely lifeless. Pull back to reveal more frozen characters. Melancholic mood. 16:9 cinematic.
+
+**Clip 1c (10s) — extend from 1b:**
+> Camera pulls out to wide shot showing a stunning game world full of frozen T-pose characters. Slow zoom out. Then cut to a dark room — an indie developer alone at a desk, face lit by monitor glow, looking at the frozen character on screen. Frustrated. 16:9.
+
+**Text overlays (add in editor):**
 - 0:00 — *"$205 billion game industry."*
-- 0:04 — *"But most characters can't move."*
-- 0:07 — *"Animation costs $2,500 a day."*
+- 0:08 — *"Every world needs characters that move."*
+- 0:15 — *"Motion capture: $2,500 per day."*
+- 0:20 — *"55% of indie devs work alone."*
+- 0:25 — *"Most make 2D games. Not by choice."*
 
 ---
 
-## CLIP 2: The Indie Dev (Grok, 6s) — 0:10-0:16
+## SCENE 2: The Reveal (0:30-0:34) — Text only
 
-**Grok video prompt:**
-> Close-up of a young indie game developer working alone late at night, face lit by dual monitor glow showing code and a 3D model in T-pose. They look frustrated, rubbing their eyes. Atmospheric, melancholic. Slow camera push-in. Cinematic 16:9.
+**No Grok needed. Just editor.**
 
-**Text overlay:**
-- 0:10 — *"55% of indie devs work alone."*
-- 0:13 — *"Most make 2D games. Not by choice."*
+- 0:30 — Black screen, 2 seconds
+- 0:32 — White text fades in: *"What if it cost $0.002?"*
+- 0:34 — Cut to product
 
----
-
-## CLIP 3: The Product (Screen recording, 16s) — 0:16-0:32
-
-**Record this from the live product:**
-
-1. (0:16-0:19) Open chat. Type: *"a person doing a victory dance"*
-   - Text overlay: *"Type a sentence."*
-
-2. (0:19-0:23) Show loading: "Generating motion on GPU..." progress bar
-   - Text overlay: *"30 seconds. $0.002."*
-
-3. (0:23-0:28) BVH viewer loads — skeleton starts dancing. Orbit camera.
-   - Text overlay: *"Get a skeleton animation."*
-   - **This is THE moment. Let it breathe.**
-
-4. (0:28-0:30) Quick cut: Blender plugin sidebar → skeleton in viewport
-   - Text overlay: *"In Blender."*
-
-5. (0:30-0:32) Quick cut: Terminal with MCP tool call
-   - Text overlay: *"In your AI agent."*
+**Music:** Drops to silence here. Build tension.
 
 ---
 
-## CLIP 4: Games Come Alive (Grok, 10s) — 0:32-0:42
+## SCENE 3: The Product (0:34-0:56) — Screen recording
 
-**Grok video prompt:**
-> Cinematic montage of diverse video game scenes with fluid character animation: a fantasy warrior swinging a glowing sword, a sci-fi character jetpacking through a neon city, a horror creature crawling on walls, a sports character doing a slam dunk. Dynamic camera movements, vibrant colors, AAA game quality. 16:9 cinematic.
+**Record the live product. This is the core.**
 
-**Text overlay:**
-- 0:32 — *"Games that couldn't exist before."*
-- 0:37 — *"Now they can."*
+| Time | What to record | Text overlay |
+|------|---------------|--------------|
+| 0:34-0:38 | Open chat. Type: "a person doing a victory dance" | *"Type a sentence."* |
+| 0:38-0:42 | Loading: "Generating motion on GPU..." progress bar | *"30 seconds."* |
+| 0:42-0:48 | BVH viewer loads — skeleton dances. Orbit camera slowly. | *"Get a skeleton animation."* |
+| 0:48-0:51 | Blender: ohao sidebar panel → skeleton in viewport | *"In Blender."* |
+| 0:51-0:53 | Terminal: MCP tool call generates animation | *"In your AI agent."* |
+| 0:53-0:56 | Gallery: browse past animations, click preview | *"Every result saved."* |
 
----
-
-## CLIP 5: The Human Moment (Grok, 6s) — 0:42-0:48
-
-**Grok video prompt:**
-> A young game developer smiling and pumping their fist at their desk. Their monitor shows a vibrant 3D game with an animated character doing a backflip. Bedroom setup, warm natural light, genuine moment of joy and accomplishment. Cinematic 16:9.
-
-**Text overlay:**
-- 0:42 — *"Not just for AAA studios."*
-- 0:45 — *"For everyone."*
+**Music:** Beat returns when skeleton starts dancing (0:42).
+**Key:** Hold on the dancing skeleton (0:42-0:48). That's the money shot.
 
 ---
 
-## CLIP 6: The Brand (12s) — 0:48-1:00
+## SCENE 4: The Vision (0:56-1:16) — 3 Grok clips chained
 
-**Option A — Grok video prompt:**
-> Slow cinematic camera moving through an abstract dark space, particles of light slowly converging into a clean minimal shape. Elegant, premium feel. Dark background with warm gold particles. 16:9.
+**Goal:** Show the world this enables. Emotional, aspirational.
 
-**Option B — Just text animation (make in any video editor):**
+**Clip 4a (10s):**
+> Cinematic fast-paced montage of diverse video game characters with fluid, professional animation: a fantasy knight executing a perfect sword combo, a ninja doing acrobatic flips, a zombie lurching forward realistically. Dynamic camera angles, AAA game quality. 16:9.
 
-- 0:48 — Black screen
-- 0:50 — "ohao" fades in (large, center)
-- 0:53 — *"Type a sentence. Get a skeleton animation."* fades in below
-- 0:56 — *"buildathon-bii.pages.dev"* fades in
-- 0:58 — Small text: *"Built at LiU Buildathon 2026"*
+**Clip 4b (6s) — extend from 4a:**
+> Continue montage: a sports character doing a slam dunk with full body physics, a dance game character performing choreography, a horror monster crawling on the ceiling. All with incredibly fluid animation. Vibrant colors. 16:9.
 
----
+**Clip 4c (6s):**
+> A young game developer leaning back in their chair, smiling with pride. Their monitor shows a beautiful 3D game with fully animated characters. Small bedroom setup, warm golden hour light through the window. Genuine moment of accomplishment. 16:9.
 
-## Summary
-
-| # | Type | Duration | What to do |
-|---|------|----------|------------|
-| 1 | Grok video | 10s | Generate: frozen T-pose characters in beautiful world |
-| 2 | Grok video | 6s | Generate: indie dev alone at night |
-| 3 | Screen recording | 16s | Record: live product demo (chat → viewer → Blender → MCP) |
-| 4 | Grok video | 10s | Generate: montage of games with fluid animation |
-| 5 | Grok video | 6s | Generate: happy dev, game character backflips |
-| 6 | Grok video or text | 12s | Generate or make: brand reveal |
-
-**Total: 60s = 4-5 Grok clips + 1 screen recording**
+**Text overlays:**
+- 0:56 — *"Games that couldn't exist before."*
+- 1:02 — *"Now they can."*
+- 1:10 — *"Not just for AAA studios. For everyone."*
 
 ---
 
-## Editor Notes
+## SCENE 5: The Brand (1:16-1:30) — Grok clip + text
 
-- Text overlays: CapCut, DaVinci Resolve, or iMovie. White clean sans-serif with subtle shadow.
-- Music quiet during clip 3 so UI sounds come through.
-- Cross-dissolve between clips 1→2 and 4→5. Hard cut into clip 3.
-- The skeleton dancing (clip 3, 0:23-0:28) is the climax — hold on it.
+**Clip 5 (6s):**
+> Abstract cinematic shot: particles of golden light slowly converging in dark space, forming a subtle geometric shape. Premium, elegant, minimal. Like a luxury brand reveal. Dark background. 16:9.
+
+**Then text animation in editor (8s):**
+- 1:22 — **ohao** fades in (large, centered)
+- 1:24 — *"Type a sentence. Get a skeleton animation."*
+- 1:26 — *"buildathon-bii.pages.dev"*
+- 1:28 — *"$0.002 per animation. 77 joints. 30 fps."*
+
+---
+
+## Production Plan
+
+### Grok generations needed: 7 clips
+
+| Clip | Duration | Scene | Prompt to use |
+|------|----------|-------|---------------|
+| 1a | 10s | Problem | Frozen T-pose characters in forest |
+| 1b | 10s | Problem | Close-up frozen warrior, extend 1a |
+| 1c | 10s | Problem | Wide shot → cut to indie dev at desk |
+| 4a | 10s | Vision | Game montage: knight, ninja, zombie |
+| 4b | 6s | Vision | Game montage: sports, dance, horror, extend 4a |
+| 4c | 6s | Vision | Happy dev, game on screen |
+| 5 | 6s | Brand | Abstract particles converging |
+
+### Screen recording: 1 session, ~22s of footage
+
+Record the full chat → generate → view → Blender → MCP flow in one take. Cut in editor.
+
+### Editor work
+
+- Stitch 7 Grok clips + screen recording
+- Add text overlays (white, clean sans-serif, subtle shadow)
+- Add music track
+- Black screen transition at 0:30
+- Total editing: ~30 min in CapCut/DaVinci
+
+### Total: 90 seconds from 7 Grok clips + 1 screen recording
