@@ -441,11 +441,39 @@ select {
   color: rgba(21, 21, 21, 0.6);
 }
 
+.integration-card__code {
+  display: block;
+  font-family: 'SFMono-Regular', 'Consolas', monospace;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(21, 21, 21, 0.06);
+  color: rgba(21, 21, 21, 0.75);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.integration-card__code--sm {
+  font-size: 0.68rem;
+  padding: 8px 12px;
+}
+
+.integration-card__install {
+  font-size: 0.8rem;
+  color: rgba(21, 21, 21, 0.55);
+}
+
 .integration-card__link {
   font-size: 0.82rem;
   font-weight: 500;
   color: rgba(21, 21, 21, 0.8);
   margin-top: 4px;
+  text-decoration: none;
+}
+
+.integration-card__link:hover {
+  text-decoration: underline;
 }
 
 /* Top Nav */

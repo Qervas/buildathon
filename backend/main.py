@@ -10,6 +10,21 @@ from routes import generate, jobs, webhooks, media, chat, sessions
 # Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
+# Migrate: add missing columns to existing tables
+from sqlalchemy import text, inspect
+with engine.connect() as conn:
+    inspector = inspect(engine)
+    if "chat_sessions" in inspector.get_table_names():
+        columns = [c["name"] for c in inspector.get_columns("chat_sessions")]
+        if "source" not in columns:
+            conn.execute(text("ALTER TABLE chat_sessions ADD COLUMN source VARCHAR(20) DEFAULT 'web'"))
+            conn.commit()
+    if "jobs" in inspector.get_table_names():
+        columns = [c["name"] for c in inspector.get_columns("jobs")]
+        if "session_id" not in columns:
+            conn.execute(text("ALTER TABLE jobs ADD COLUMN session_id UUID"))
+            conn.commit()
+
 app = FastAPI(title="Buildathon API")
 
 # Update CORS for production frontend URL later

@@ -3,6 +3,8 @@ import { BvhPlayer } from './components/BvhPlayer';
 import { ChatView } from './components/chat/ChatView';
 import { Gallery } from './components/chat/Gallery';
 
+const API_BASE = 'https://backend-production-b095.up.railway.app';
+
 type Page = { view: 'landing' } | { view: 'chat'; sessionId?: string } | { view: 'gallery' };
 
 function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () => void }) {
@@ -66,45 +68,59 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
           <p className="eyebrow">Integrations</p>
           <h2>Use it everywhere</h2>
           <div className="integration-cards">
-            <a
-              className="integration-card"
-              href="https://github.com/Qervas/buildathon/tree/main/mcp-server"
-              target="_blank"
-              rel="noopener"
-            >
+            <div className="integration-card">
               <span className="integration-card__icon">MCP</span>
               <span className="integration-card__name">AI Agent Plugin</span>
               <span className="integration-card__desc">
                 Claude Code, Cursor, Windsurf — any MCP-compatible agent can generate animations.
               </span>
-              <span className="integration-card__link">View on GitHub &rarr;</span>
-            </a>
-            <a
-              className="integration-card"
-              href="https://github.com/Qervas/buildathon/tree/main/plugins/blender"
-              target="_blank"
-              rel="noopener"
-            >
+              <code className="integration-card__code">
+                git clone https://github.com/Qervas/buildathon.git{'\n'}
+                cd buildathon/mcp-server &amp;&amp; npm i &amp;&amp; npm run build
+              </code>
+              <span className="integration-card__install">
+                Add to your agent config:
+              </span>
+              <code className="integration-card__code integration-card__code--sm">
+                {`"ohao-motion": { "command": "node", "args": ["path/to/mcp-server/dist/index.js"] }`}
+              </code>
+              <a className="integration-card__link" href="https://github.com/Qervas/buildathon/tree/main/mcp-server" target="_blank" rel="noopener">
+                Full instructions &rarr;
+              </a>
+            </div>
+            <div className="integration-card">
               <span className="integration-card__icon">B</span>
               <span className="integration-card__name">Blender Plugin</span>
               <span className="integration-card__desc">
                 Sidebar panel + Ctrl+Shift+M shortcut. Generate and import BVH directly in Blender.
               </span>
-              <span className="integration-card__link">View on GitHub &rarr;</span>
-            </a>
-            <a
-              className="integration-card"
-              href="https://backend-production-b095.up.railway.app/docs"
-              target="_blank"
-              rel="noopener"
-            >
-              <span className="integration-card__icon">{ }</span>
+              <code className="integration-card__code">
+                git clone https://github.com/Qervas/buildathon.git{'\n'}
+                cp -r buildathon/plugins/blender{'\n'}
+                {'  '}~/.config/blender/&lt;version&gt;/scripts/addons/ohao_motion
+              </code>
+              <span className="integration-card__install">
+                Then enable in Blender: Edit &gt; Preferences &gt; Add-ons &gt; search "ohao"
+              </span>
+              <a className="integration-card__link" href="https://github.com/Qervas/buildathon/tree/main/plugins/blender" target="_blank" rel="noopener">
+                Full instructions &rarr;
+              </a>
+            </div>
+            <div className="integration-card">
+              <span className="integration-card__icon">{'{ }'}</span>
               <span className="integration-card__name">REST API</span>
               <span className="integration-card__desc">
-                Simple HTTP endpoints for text-to-motion and video motion capture. Integrate anywhere.
+                Simple HTTP endpoints for text-to-motion and video motion capture.
               </span>
-              <span className="integration-card__link">API Docs &rarr;</span>
-            </a>
+              <code className="integration-card__code">
+                curl -X POST {API_BASE}/api/generate/text2motion{'\n'}
+                {'  '}-H "Content-Type: application/json"{'\n'}
+                {'  '}-d '{`{"prompt":"victory dance","duration":4}`}'
+              </code>
+              <a className="integration-card__link" href="https://backend-production-b095.up.railway.app/docs" target="_blank" rel="noopener">
+                API Docs &rarr;
+              </a>
+            </div>
           </div>
         </section>
       </section>
