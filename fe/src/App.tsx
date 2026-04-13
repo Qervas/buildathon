@@ -64,8 +64,49 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
           </div>
         </section>
 
+        <section className="landing__protocols">
+          <p className="eyebrow">Agentic Ecosystem</p>
+          <h2>Works with every agent framework</h2>
+          <p className="lede">
+            ohao provides animation capabilities as a tool layer — plug into any
+            agent protocol or framework. We don't compete with agents, we empower them.
+          </p>
+          <div className="protocol-grid">
+            <div className="protocol-badge protocol-badge--active">
+              <span className="protocol-badge__name">MCP</span>
+              <span className="protocol-badge__by">Anthropic</span>
+              <span className="protocol-badge__status">Supported</span>
+            </div>
+            <div className="protocol-badge protocol-badge--active">
+              <span className="protocol-badge__name">REST API</span>
+              <span className="protocol-badge__by">Universal</span>
+              <span className="protocol-badge__status">Supported</span>
+            </div>
+            <div className="protocol-badge protocol-badge--soon">
+              <span className="protocol-badge__name">A2A</span>
+              <span className="protocol-badge__by">Google / Linux Foundation</span>
+              <span className="protocol-badge__status">Coming soon</span>
+            </div>
+            <div className="protocol-badge protocol-badge--soon">
+              <span className="protocol-badge__name">AG-UI</span>
+              <span className="protocol-badge__by">CopilotKit</span>
+              <span className="protocol-badge__status">Coming soon</span>
+            </div>
+          </div>
+          <div className="framework-row">
+            <span className="framework-tag">Claude Code</span>
+            <span className="framework-tag">Cursor</span>
+            <span className="framework-tag">Windsurf</span>
+            <span className="framework-tag">OpenClaw</span>
+            <span className="framework-tag">Hermes Agent</span>
+            <span className="framework-tag">OpenAI Agents SDK</span>
+            <span className="framework-tag">LangGraph</span>
+            <span className="framework-tag">CrewAI</span>
+          </div>
+        </section>
+
         <section className="landing__integrations">
-          <p className="eyebrow">Integrations</p>
+          <p className="eyebrow">Install</p>
           <h2>Use it everywhere</h2>
           <div className="integration-cards">
             <div className="integration-card">

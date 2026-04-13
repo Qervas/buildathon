@@ -376,6 +376,85 @@ select {
   color: rgba(21, 21, 21, 0.6);
 }
 
+/* Protocols / Ecosystem Section */
+
+.landing__protocols {
+  max-width: 1320px;
+  padding-bottom: 40px;
+}
+
+.landing__protocols h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin: 6px 0 8px;
+}
+
+.landing__protocols .lede {
+  margin-bottom: 24px;
+}
+
+.protocol-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.protocol-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+.protocol-badge__name {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.protocol-badge__by {
+  font-size: 0.76rem;
+  color: rgba(21, 21, 21, 0.45);
+}
+
+.protocol-badge__status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.protocol-badge--active .protocol-badge__status {
+  color: #16a34a;
+}
+
+.protocol-badge--soon .protocol-badge__status {
+  color: rgba(21, 21, 21, 0.35);
+}
+
+.framework-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.framework-tag {
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  background: rgba(255, 255, 255, 0.35);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(21, 21, 21, 0.65);
+}
+
 /* Integrations Section */
 
 .landing__integrations {

@@ -277,6 +277,50 @@ Every one of these studios needs animation. We make it 100x faster and 1000x che
 
 ---
 
+# Agentic Ecosystem
+
+<div class="text-lg text-gray-400 mb-6">We're a tool layer — every agent framework can use us</div>
+
+<div class="grid grid-cols-3 gap-4 mt-4">
+
+<div class="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
+<div class="font-bold text-green-400 text-sm mb-2">SUPPORTED NOW</div>
+<div class="text-sm text-gray-300">MCP (Anthropic)</div>
+<div class="text-sm text-gray-300">REST API</div>
+<div class="text-sm text-gray-300">Blender Plugin</div>
+</div>
+
+<div class="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
+<div class="font-bold text-blue-400 text-sm mb-2">COMPATIBLE</div>
+<div class="text-sm text-gray-300">OpenClaw (120k stars)</div>
+<div class="text-sm text-gray-300">Hermes Agent (NousResearch)</div>
+<div class="text-sm text-gray-300">OpenAI Agents SDK</div>
+</div>
+
+<div class="bg-purple-900/30 border border-purple-500/30 rounded-lg p-4">
+<div class="font-bold text-purple-400 text-sm mb-2">ROADMAP</div>
+<div class="text-sm text-gray-300">A2A (Google/Linux Foundation)</div>
+<div class="text-sm text-gray-300">AG-UI (CopilotKit)</div>
+<div class="text-sm text-gray-300">LangGraph / CrewAI tools</div>
+</div>
+
+</div>
+
+<div class="flex flex-wrap gap-2 mt-6 justify-center">
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">Claude Code</div>
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">Cursor</div>
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">Windsurf</div>
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">OpenClaw</div>
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">Hermes</div>
+<div class="px-3 py-1 rounded-full bg-gray-800 text-sm text-gray-400">Codex</div>
+</div>
+
+<div class="mt-4 text-sm text-gray-500">
+The agent protocol stack: MCP (tool access) + A2A (agent collaboration) + AG-UI (frontend). We sit at the MCP layer and expand from there.
+</div>
+
+---
+
 # Our Moat
 
 <div class="text-xl text-gray-400 mb-6">
