@@ -307,10 +307,50 @@
 }
 
 .anim-card__viewer {
+  position: relative;
   height: 360px;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.92), rgba(244, 234, 214, 0.78)),
     linear-gradient(180deg, rgba(241, 237, 232, 0.7), rgba(209, 208, 202, 0.82));
+}
+
+.anim-card__display-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(12px);
+  color: rgba(17, 17, 17, 0.86);
+  cursor: pointer;
+  box-shadow:
+    0 8px 18px rgba(22, 16, 10, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    transform 140ms ease,
+    background-color 140ms ease;
+}
+
+.anim-card__display-toggle svg {
+  width: 14px;
+  height: 14px;
+}
+
+.anim-card__display-toggle:hover:enabled {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.anim-card__display-toggle:disabled {
+  opacity: 0.42;
+  cursor: default;
 }
 
 .anim-card__viewer-inner {
