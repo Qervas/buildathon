@@ -30,54 +30,13 @@ mdc: true
 
 # The Problem
 
-<div class="grid grid-cols-2 gap-10 mt-6">
-
-<div>
-
-<div class="text-2xl font-bold mb-6">Animation is the gate.</div>
-
-<v-clicks>
-
-- Motion capture studio: **$2,500/day**
-- Actor setup: **$4,000/person**
-- Mocap suit: **$2,500-$50,000**
-- Software: **$2,145/yr**
-- Result: **55% of indie devs are solo, 50% self-funded**
-- **Most make 2D games. Not by choice.**
-
-</v-clicks>
-
+<div class="text-5xl leading-tight mt-12 max-w-5xl">
+Every month, a new breakthrough AI model is open-sourced.
 </div>
 
-<div class="mt-4">
-
-```
-📄 How to use open-source motion AI:
-
-Prerequisites:
-  - CUDA 12.4 + cuDNN 8.9
-  - Python 3.10 + PyTorch 2.3.0
-  - 24GB VRAM minimum
-  - 50-page setup guide
-
-$ pip install -e .
-$ python download_checkpoints.py
-$ python scripts/demo.py --config ...
-
-❌ Error: CUDA out of memory
-```
-
-<div class="text-center mt-3 text-sm opacity-50">
-What "open-source AI" looks like for 99% of creators
+<div class="text-5xl leading-tight mt-12">
+And nobody can use it.
 </div>
-
-</div>
-
-</div>
-
-<!--
-The models exist. World-class open-source AI for animation, 3D, music. But nobody can use them.
--->
 
 ---
 
