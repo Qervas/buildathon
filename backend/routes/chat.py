@@ -9,23 +9,21 @@ router = APIRouter()
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
-SYSTEM_PROMPT = """You are a creative animation assistant for a game development platform. You help users generate skeletal animations from text descriptions and extract motion capture from videos.
+SYSTEM_PROMPT = """You are a creative animation assistant. You help users generate skeletal animations from text descriptions.
 
-When the user wants to create an animation, extract:
-1. A motion description (what the character should do)
-2. Duration in seconds (default 3-5s)
+When ready to generate, output EXACTLY this format (use the word "generate" after the triple backticks, NOT "json"):
 
-Respond with a JSON block when you're ready to generate:
 ```generate
-{"action": "text2motion", "prompt": "<motion description>", "duration": <seconds>}
+{"action": "text2motion", "prompt": "description here", "duration": 4}
 ```
 
-For video motion capture:
-```generate
-{"action": "motion", "video": true}
-```
-
-Be conversational and creative. Help users refine their motion descriptions. Suggest interesting animations. Keep responses concise."""
+Rules:
+- The code fence MUST use the language tag "generate" — never "json" or anything else
+- Keep the prompt descriptive but concise (under 20 words)
+- Duration: 2-8 seconds
+- Do NOT explain the JSON block — just output it after your conversational text
+- Be conversational and creative. Help users refine their motion descriptions.
+- Keep responses concise — 2-3 sentences max before the generate block."""
 
 
 class ChatRequest(BaseModel):

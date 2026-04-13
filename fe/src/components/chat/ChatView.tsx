@@ -23,8 +23,12 @@ function nextId() {
   return `msg-${++msgCounter}-${Date.now()}`;
 }
 
+// Match ```generate, ```json, or ``` followed by JSON with "action" key
+const GENERATE_BLOCK_RE = /```(?:generate|json)?\s*\n(\{[\s\S]*?"action"[\s\S]*?\})\s*\n```/;
+const STRIP_BLOCK_RE = /```(?:generate|json)?\s*\n\{[\s\S]*?"action"[\s\S]*?\}\s*\n```/g;
+
 function parseGenerateBlock(text: string): { action: string; prompt?: string; duration?: number } | null {
-  const match = text.match(/```generate\s*\n([\s\S]*?)\n```/);
+  const match = text.match(GENERATE_BLOCK_RE);
   if (!match) return null;
   try {
     return JSON.parse(match[1]);
@@ -34,7 +38,7 @@ function parseGenerateBlock(text: string): { action: string; prompt?: string; du
 }
 
 function stripGenerateBlock(text: string): string {
-  return text.replace(/```generate\s*\n[\s\S]*?\n```/g, '').trim();
+  return text.replace(STRIP_BLOCK_RE, '').trim();
 }
 
 export function ChatView({ initialSessionId, onSessionReady }: Props) {
