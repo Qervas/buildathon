@@ -84,6 +84,7 @@ export interface SessionMessage {
 export interface ChatSession {
   id: string;
   title: string;
+  source: string;  // web, mcp, blender, api
   created_at: string;
   updated_at: string;
   message_count: number;

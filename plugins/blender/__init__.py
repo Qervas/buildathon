@@ -341,6 +341,79 @@ class OHAO_OT_TestConnection(bpy.types.Operator):
         return {'FINISHED'}
 
 
+# ── History ──────────────────────────────────────────────────────────
+
+_history_cache = []  # list of { title, result_url, frames, fps }
+
+
+class OHAO_OT_RefreshHistory(bpy.types.Operator):
+    bl_idname = "ohao.refresh_history"
+    bl_label = "Refresh History"
+    bl_description = "Load past generated animations from the server"
+
+    def execute(self, context):
+        global _history_cache
+        try:
+            sessions = api_get("/api/sessions")
+            items = []
+            for s in sessions:
+                for msg in s.get("messages", []):
+                    job = msg.get("job")
+                    if job and job.get("status") == "completed" and job.get("result_url"):
+                        meta = job.get("meta") or {}
+                        items.append({
+                            "title": s.get("title", "Untitled")[:50],
+                            "result_url": job["result_url"],
+                            "frames": meta.get("frames", "?"),
+                            "fps": meta.get("fps", "?"),
+                        })
+            _history_cache = items
+            self.report({'INFO'}, f"ohao: Loaded {len(items)} animations")
+        except Exception as e:
+            self.report({'ERROR'}, f"ohao: Failed to load history — {e}")
+        return {'FINISHED'}
+
+
+class OHAO_OT_ImportFromHistory(bpy.types.Operator):
+    bl_idname = "ohao.import_from_history"
+    bl_label = "Import Animation"
+    bl_description = "Download and import this BVH animation"
+
+    result_url: StringProperty()
+
+    def execute(self, context):
+        if not self.result_url:
+            return {'CANCELLED'}
+
+        self.report({'INFO'}, "ohao: Downloading animation...")
+
+        url = self.result_url
+
+        def _run():
+            try:
+                _gen_state["running"] = True
+                _gen_state["start_time"] = time.time()
+                _gen_state["stage"] = "Downloading BVH..."
+                _gen_state["error"] = ""
+                _gen_state["done"] = False
+
+                filepath = download_bvh(url)
+                import_bvh_on_main_thread(filepath)
+
+                _gen_state["stage"] = "Imported from history"
+                _gen_state["running"] = False
+                _gen_state["done"] = True
+            except Exception as e:
+                _gen_state["error"] = str(e)
+                _gen_state["stage"] = f"Error: {e}"
+                _gen_state["running"] = False
+                _gen_state["done"] = True
+
+        bpy.ops.ohao.progress_timer()
+        threading.Thread(target=_run, daemon=True).start()
+        return {'FINISHED'}
+
+
 class OHAO_OT_QuickGenerate(bpy.types.Operator):
     """Quick popup — Ctrl+Shift+M"""
     bl_idname = "ohao.quick_generate"
@@ -386,9 +459,25 @@ class OhaoProperties(bpy.types.PropertyGroup):
     )
 
 
-# ── Panel ────────────────────────────────────────────────────────────
+# ── Panels ───────────────────────────────────────────────────────────
+
+def _draw_status(layout):
+    """Shared status drawing for all panels."""
+    if _gen_state["running"]:
+        elapsed = int(time.time() - _gen_state["start_time"])
+        box = layout.box()
+        box.label(text=_gen_state["stage"], icon='SORTTIME')
+        box.label(text=f"Elapsed: {elapsed}s")
+    elif _gen_state["done"]:
+        box = layout.box()
+        if _gen_state["error"]:
+            box.label(text=_gen_state["stage"], icon='ERROR')
+        else:
+            box.label(text=_gen_state["stage"], icon='CHECKMARK')
+
 
 class OHAO_PT_MainPanel(bpy.types.Panel):
+    """Sidebar panel in 3D Viewport (N key > ohao tab)"""
     bl_label = "ohao Motion"
     bl_idname = "OHAO_PT_main"
     bl_space_type = 'VIEW_3D'
@@ -399,20 +488,7 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
         layout = self.layout
         props = context.scene.ohao
 
-        # Status bar
-        if _gen_state["running"]:
-            elapsed = int(time.time() - _gen_state["start_time"])
-            box = layout.box()
-            box.label(text=_gen_state["stage"], icon='SORTTIME')
-            box.label(text=f"Elapsed: {elapsed}s")
-            box.separator()
-        elif _gen_state["done"]:
-            box = layout.box()
-            if _gen_state["error"]:
-                box.label(text=_gen_state["stage"], icon='ERROR')
-            else:
-                box.label(text=_gen_state["stage"], icon='CHECKMARK')
-            box.separator()
+        _draw_status(layout)
 
         # Text to Motion
         box = layout.box()
@@ -434,6 +510,89 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
 
         layout.separator()
 
+        # History
+        box = layout.box()
+        row = box.row()
+        row.label(text="History", icon='TIME')
+        row.operator("ohao.refresh_history", text="", icon='FILE_REFRESH')
+
+        if _history_cache:
+            for item in _history_cache:
+                row = box.row(align=True)
+                row.label(text=f"{item['title']} ({item['frames']}f)", icon='ANIM_DATA')
+                op = row.operator("ohao.import_from_history", text="", icon='IMPORT')
+                op.result_url = item["result_url"]
+        else:
+            box.label(text="Click refresh to load", icon='INFO')
+
+        layout.separator()
+        layout.label(text="Shortcut: Ctrl+Shift+M", icon='EVENT_M')
+        layout.operator("ohao.test_connection", text="Test Connection", icon='URL')
+
+
+class OHAO_PT_PropertiesPanel(bpy.types.Panel):
+    """Panel in Properties Editor > Object Data tab (appears for any object)"""
+    bl_label = "ohao Motion"
+    bl_idname = "OHAO_PT_properties"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.ohao
+
+        _draw_status(layout)
+
+        # Text to Motion
+        layout.prop(props, "motion_prompt", text="Prompt")
+        layout.prop(props, "motion_duration")
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.text_to_motion", text="Generate Motion", icon='PLAY')
+
+        layout.separator()
+
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.extract_motion", text="Motion from Video...", icon='FILE_MOVIE')
+
+
+class OHAO_PT_BonePanel(bpy.types.Panel):
+    """Panel in Properties Editor > Bone Data tab (appears when armature selected)"""
+    bl_label = "ohao Motion"
+    bl_idname = "OHAO_PT_bone"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "data"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object and context.object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.ohao
+
+        _draw_status(layout)
+
+        layout.label(text="Generate new motion for this armature:", icon='ANIM_DATA')
+        layout.prop(props, "motion_prompt", text="Prompt")
+        layout.prop(props, "motion_duration")
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.text_to_motion", text="Generate Motion", icon='PLAY')
+
+        layout.separator()
+
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.extract_motion", text="Motion from Video...", icon='FILE_MOVIE')
+
+        layout.separator()
+
         # Quick access
         layout.label(text="Shortcut: Ctrl+Shift+M", icon='EVENT_M')
         layout.operator("ohao.test_connection", text="Test Connection", icon='URL')
@@ -447,8 +606,12 @@ classes = (
     OHAO_OT_TextToMotion,
     OHAO_OT_ExtractMotion,
     OHAO_OT_TestConnection,
+    OHAO_OT_RefreshHistory,
+    OHAO_OT_ImportFromHistory,
     OHAO_OT_QuickGenerate,
     OHAO_PT_MainPanel,
+    OHAO_PT_PropertiesPanel,
+    OHAO_PT_BonePanel,
 )
 
 addon_keymaps = []

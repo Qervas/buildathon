@@ -39,8 +39,16 @@ server.tool("generate_animation", "Generate a skeletal animation from a text des
     prompt: z.string().describe("Motion description, e.g. 'a person doing a victory dance'"),
     duration: z.number().min(1).max(10).default(4).describe("Animation duration in seconds (1-10)"),
 }, async ({ prompt, duration }) => {
+    // Create session tagged as MCP source
+    const session = (await apiPost("/api/sessions", { source: "mcp" }));
+    await apiPost("/api/sessions/message", { session_id: session.id, role: "user", content: prompt });
     const { job_id } = (await apiPost("/api/generate/text2motion", { prompt, duration }));
     const job = await pollUntilDone(job_id);
+    // Save result to session
+    await apiPost("/api/sessions/message", {
+        session_id: session.id, role: "assistant",
+        content: `[Generated: ${prompt}]`, job_id,
+    }).catch(() => { });
     if (job.status === "failed") {
         return {
             content: [{ type: "text", text: `Animation generation failed: ${job.error}` }],

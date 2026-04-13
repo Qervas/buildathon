@@ -31,6 +31,7 @@ class ChatSession(Base):
     __tablename__ = "chat_sessions"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = Column(String(200), default="Untitled")
+    source = Column(String(20), default="web")  # web, mcp, blender, api
     visible = Column(Boolean, default=True)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

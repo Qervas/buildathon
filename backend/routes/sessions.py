@@ -42,6 +42,7 @@ def list_sessions(db: Session = Depends(get_db)):
         result.append({
             "id": str(s.id),
             "title": s.title,
+            "source": s.source or "web",
             "created_at": s.created_at.isoformat() if s.created_at else None,
             "updated_at": s.updated_at.isoformat() if s.updated_at else None,
             "message_count": len(msgs),
@@ -80,15 +81,20 @@ def get_session(session_id: UUID, db: Session = Depends(get_db)):
     return {
         "id": str(session.id),
         "title": session.title,
+        "source": session.source or "web",
         "created_at": session.created_at.isoformat() if session.created_at else None,
         "messages": msgs,
     }
 
 
+class SessionCreate(BaseModel):
+    source: str = "web"  # web, mcp, blender, api
+
+
 @router.post("/api/sessions")
-def create_session(db: Session = Depends(get_db)):
+def create_session(req: SessionCreate = SessionCreate(), db: Session = Depends(get_db)):
     """Create a new chat session."""
-    session = ChatSession()
+    session = ChatSession(source=req.source)
     db.add(session)
     db.commit()
     db.refresh(session)
