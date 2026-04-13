@@ -92,19 +92,19 @@ Type a sentence. Get a skeleton animation.
 <div class="bg-gray-800 rounded-lg p-5 text-center">
 <div class="text-3xl mb-3">📝</div>
 <div class="font-bold text-blue-400 mb-2">Text to Motion</div>
-<div class="text-sm text-gray-400">"person doing a victory dance" → 77-joint SOMA skeleton. open-source AI.</div>
+<div class="text-sm text-gray-400">"person doing a victory dance" → full-body skeleton animation. Open-source AI.</div>
 </div>
 
 <div class="bg-gray-800 rounded-lg p-5 text-center">
 <div class="text-3xl mb-3">📱</div>
 <div class="font-bold text-green-400 mb-2">Video Motion Capture</div>
-<div class="text-sm text-gray-400">Upload any phone video → professional BVH. No suit. open-source AI.</div>
+<div class="text-sm text-gray-400">Upload any phone video → professional animation data. No suit. No studio.</div>
 </div>
 
 <div class="bg-gray-800 rounded-lg p-5 text-center">
 <div class="text-3xl mb-3">🔌</div>
 <div class="font-bold text-orange-400 mb-2">Works Everywhere</div>
-<div class="text-sm text-gray-400">Web UI · REST API · MCP for AI agents · Blender plugin. BVH for Unity/Unreal.</div>
+<div class="text-sm text-gray-400">Web · API · AI agent plugin · Blender. Works with Unity, Unreal, Godot.</div>
 </div>
 
 </div>
@@ -130,9 +130,9 @@ Let's generate an animation right now.
 
 <!--
 1. Open chat → type "a person doing a victory dance" → 3s duration → Generate
-2. While loading (~30s): "Open-source AI on a cloud GPU. 77-joint skeleton from 5 words."
+2. While loading (~30s): "Open-source AI running in the cloud. Full-body skeleton from 5 words."
 3. Skeleton starts dancing. LET THE AUDIENCE REACT. Don't talk over it.
-4. "30fps, industry-standard BVH. Import into Blender, Unity, Unreal."
+4. "Industry-standard format. Import directly into Blender, Unity, Unreal."
 5. Show Blender plugin: sidebar → Generate Motion → skeleton appears in viewport.
 6. Show Gallery: past results, inline previews, download links.
 -->
@@ -208,10 +208,10 @@ Sweden: **#1 game-producing per capita** · 900+ studios · Minecraft, Battlefie
 <div class="text-sm font-bold text-gray-400 mb-3">AGENT-NATIVE — WORKS WITH EVERYTHING</div>
 
 <div class="grid grid-cols-2 gap-2 text-sm">
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">MCP</span> · Anthropic</div>
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">REST API</span> · Universal</div>
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">Blender</span> · Plugin</div>
-<div class="bg-gray-800 border border-gray-700 rounded p-2"><span class="text-gray-500">A2A</span> · Coming</div>
+<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">MCP</span> — AI agent tool protocol</div>
+<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">REST API</span> — integrate from any code</div>
+<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">Blender</span> — sidebar plugin</div>
+<div class="bg-gray-800 border border-gray-700 rounded p-2"><span class="text-gray-500 font-bold">A2A</span> — agent-to-agent protocol · soon</div>
 </div>
 
 <div class="flex flex-wrap gap-1.5 mt-3">
@@ -282,7 +282,7 @@ We're the <span class="text-blue-400">Cloudflare</span> of open-source AI. <span
 <div class="bg-gray-800 rounded-lg p-6 text-center border border-orange-500">
 <div class="text-orange-400 text-sm font-bold mb-2">ENTERPRISE</div>
 <div class="text-3xl font-bold mb-2">Custom</div>
-<div class="text-sm text-gray-400">Bulk API, priority GPU</div>
+<div class="text-sm text-gray-400">Bulk access, priority processing</div>
 <div class="text-sm text-gray-400">SLA, private deploy</div>
 </div>
 
@@ -304,22 +304,22 @@ Cost per generation: fractions of a cent. Unit economics work at every tier. Tar
 
 <div class="flex items-center gap-3">
 <div class="text-green-400 text-lg">✓</div>
-<div><strong>2 GPU inference services</strong> on serverless cloud<br><span class="text-sm text-gray-400">Text→motion + Video→mocap, open-source models</span></div>
+<div><strong>2 GPU inference services</strong> — serverless<br><span class="text-sm text-gray-400">Text→motion + Video→mocap on cloud GPUs</span></div>
 </div>
 
 <div class="flex items-center gap-3">
 <div class="text-green-400 text-lg">✓</div>
-<div><strong>FastAPI + PostgreSQL</strong> on Railway<br><span class="text-sm text-gray-400">R2 storage, webhooks, job queue</span></div>
+<div><strong>FastAPI + PostgreSQL</strong> backend<br><span class="text-sm text-gray-400">REST API, R2 storage, async webhooks</span></div>
 </div>
 
 <div class="flex items-center gap-3">
 <div class="text-green-400 text-lg">✓</div>
-<div><strong>React + Three.js</strong> on Cloudflare Pages<br><span class="text-sm text-gray-400">Chat UI, 3D BVH viewer, gallery</span></div>
+<div><strong>React + Three.js</strong> frontend<br><span class="text-sm text-gray-400">Chat UI, 3D skeleton viewer, gallery</span></div>
 </div>
 
 <div class="flex items-center gap-3">
 <div class="text-green-400 text-lg">✓</div>
-<div><strong>MCP Server</strong><br><span class="text-sm text-gray-400">Any AI agent can generate animations</span></div>
+<div><strong>MCP Server</strong> for AI agents<br><span class="text-sm text-gray-400">Claude Code, Cursor, OpenClaw can call our tools</span></div>
 </div>
 
 <div class="flex items-center gap-3">
@@ -342,7 +342,7 @@ Cost per generation: fractions of a cent. Unit economics work at every tier. Tar
 <div class="text-blue-400 mb-3">→ ~$0.04</div>
 
 <div class="text-gray-500">4 distribution channels:</div>
-<div class="text-gray-400">Web · API · MCP · Blender</div>
+<div class="text-gray-400">Web · API · AI Agents · Blender</div>
 
 </div>
 
