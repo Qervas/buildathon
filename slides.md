@@ -208,6 +208,39 @@ Cost per generation: fractions of a cent. Unit economics work at every tier. Tar
 
 ---
 
+# Our Moat
+
+<div class="text-xl text-gray-400 mb-6">
+"Won't the model creators just do this themselves?"
+</div>
+
+**No.** They are model RESEARCHERS. They publish, release weights, move on.
+
+<div class="grid grid-cols-3 gap-4 mt-6">
+
+<div class="bg-blue-900/30 border border-blue-500/30 rounded-lg p-4">
+<div class="font-bold text-blue-400 mb-2">Cross-Model Pipelines</div>
+<div class="text-sm text-gray-400">Anyone can deploy ONE model. We pipeline them: image → 3D → rig → animate. No single model does this.</div>
+</div>
+
+<div class="bg-orange-900/30 border border-orange-500/30 rounded-lg p-4">
+<div class="font-bold text-orange-400 mb-2">Speed of Deployment</div>
+<div class="text-sm text-gray-400">New model Tuesday, deployed Thursday. We know the quirks — skeleton format fixes, gated model workarounds, memory optimization.</div>
+</div>
+
+<div class="bg-green-900/30 border border-green-500/30 rounded-lg p-4">
+<div class="font-bold text-green-400 mb-2">Compounding Expertise</div>
+<div class="text-sm text-gray-400">Every model deployed makes the platform more valuable. Domain knowledge doesn't come from papers — it comes from shipping.</div>
+</div>
+
+</div>
+
+<div class="mt-8 text-xl font-bold">
+We are the <span class="text-blue-400">Cloudflare</span> of open-source AI. <span class="text-gray-500">They didn't create the internet — they made it accessible.</span>
+</div>
+
+---
+
 # What We Built Today
 
 <div class="mt-2 mb-6 text-lg text-gray-400">One day. Three people. Fully working product.</div>
