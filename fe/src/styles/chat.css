@@ -404,6 +404,36 @@
   border-bottom: 1px solid rgba(17, 17, 17, 0.06);
 }
 
+.gallery-card__source {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.gallery-card__source--web {
+  background: rgba(56, 189, 248, 0.15);
+  color: #0ea5e9;
+}
+
+.gallery-card__source--mcp {
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+}
+
+.gallery-card__source--blender {
+  background: rgba(251, 146, 60, 0.15);
+  color: #f97316;
+}
+
+.gallery-card__source--api {
+  background: rgba(74, 222, 128, 0.15);
+  color: #22c55e;
+}
+
 .gallery-card__title {
   font-weight: 600;
   font-size: 0.92rem;

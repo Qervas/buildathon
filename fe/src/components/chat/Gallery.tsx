@@ -73,6 +73,9 @@ export function Gallery({ onOpenSession }: Props) {
       {sessions.map((session) => (
         <div key={session.id} className="gallery-card">
           <div className="gallery-card__header">
+            <span className={`gallery-card__source gallery-card__source--${session.source || 'web'}`}>
+              {session.source || 'web'}
+            </span>
             <span className="gallery-card__title">{session.title}</span>
             <span className="gallery-card__time">
               {new Date(session.created_at).toLocaleString()}
