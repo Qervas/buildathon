@@ -138,10 +138,9 @@ class KimodoService:
 
         bvh_bytes = motion_to_bvh_bytes(local_rot_mats, root_positions, skeleton=skeleton, fps=self.model.fps)
 
-        # Fix SOMA BVH: strip reference bone + scale cm→m
-        from core.base import strip_reference_root, scale_bvh_to_meters
+        # Fix SOMA BVH: strip reference bone (frontend auto-scales)
+        from core.base import strip_reference_root
         bvh_bytes = strip_reference_root(bvh_bytes)
-        bvh_bytes = scale_bvh_to_meters(bvh_bytes)
 
         torch.cuda.empty_cache()
 

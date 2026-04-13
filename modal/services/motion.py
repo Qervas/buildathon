@@ -167,10 +167,9 @@ class MotionService:
 
         bvh_bytes = bvh_path.read_bytes()
 
-        # Fix SOMA BVH: strip reference bone + scale cm→m
-        from core.base import strip_reference_root, scale_bvh_to_meters
+        # Fix SOMA BVH: strip reference bone (frontend auto-scales)
+        from core.base import strip_reference_root
         bvh_bytes = strip_reference_root(bvh_bytes)
-        bvh_bytes = scale_bvh_to_meters(bvh_bytes)
 
         output_key = base.upload_result(bvh_bytes, "animation.bvh", "application/octet-stream", job_id)
 
