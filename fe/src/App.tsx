@@ -7,9 +7,17 @@ const API_BASE = 'https://backend-production-b095.up.railway.app';
 
 type Page = { view: 'landing' } | { view: 'chat'; sessionId?: string } | { view: 'gallery' };
 
-const LOGOS = [
-  'Anthropic', 'OpenAI', 'NVIDIA', 'Cursor', 'Windsurf',
-  'OpenClaw', 'Hermes', 'LangGraph', 'CrewAI', 'Codex',
+const LOGOS: { name: string; color: string; svg: string }[] = [
+  { name: 'Claude Code', color: '#d97706', svg: '<path d="M13.827 3.52h3.603L24 20.48h-3.603l-1.404-3.784H11.03L9.626 20.48H6.023L12.453 3.52h1.374zm2.285 10.18L13.19 6.97l-2.923 6.73h5.845z"/>' },
+  { name: 'ChatGPT', color: '#10b981', svg: '<path d="M22.28 9.82a5.98 5.98 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.51-2.9A6.07 6.07 0 0 0 4.98 4.18 5.98 5.98 0 0 0 .98 7.08a6.05 6.05 0 0 0 .74 7.1 5.98 5.98 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.51 2.9A5.98 5.98 0 0 0 13.26 24a6.06 6.06 0 0 0 5.77-4.21 5.99 5.99 0 0 0 4-2.9 6.06 6.06 0 0 0-.75-7.07z"/>' },
+  { name: 'Kimodo', color: '#76b900', svg: '<path d="M8.948 8.798v-1.43a6.7 6.7 0 0 1 .424-.018c3.922-.124 6.493 3.374 6.493 3.374s-2.774 3.851-5.75 3.851c-.422 0-.81-.065-1.167-.187v-4.675c1.733.18 2.076.89 3.108 2.593l2.31-1.94S12.32 8.798 9.372 8.798h-.424zM8.948 4.252v2.148l.424-.024c5.41-.182 8.948 4.29 8.948 4.29s-4.066 4.86-8.303 4.86c-.37 0-.724-.034-1.069-.097v1.858c.283.036.574.058.873.058 4.15 0 7.14-2.132 10.052-4.64.48.384 2.448 1.32 2.848 1.728-2.848 2.352-9.48 4.488-12.836 4.488-.316 0-.62-.018-.937-.049v2.404H3V4.252h5.948zM3 13.78v-1.804c.503-.082 1.878-.16 1.878-.16v3.535C3.82 14.746 3 13.78 3 13.78z"/>' },
+  { name: 'Cursor', color: '#3b82f6', svg: '<path d="M5 3l14 9-14 9V3z"/>' },
+  { name: 'Windsurf', color: '#06b6d4', svg: '<path d="M3 17c3-5 6-10 9-10s6 5 9 10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M3 13c3-4 6-8 9-8s6 4 9 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>' },
+  { name: 'OpenClaw', color: '#ef4444', svg: '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.68.78 4.95 2.05l-1.41 1.41A5.02 5.02 0 0 0 12 8c-2.76 0-5 2.24-5 5s2.24 5 5 5a4.98 4.98 0 0 0 3.54-1.46l1.41 1.41A6.98 6.98 0 0 1 12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8z"/><circle cx="12" cy="13" r="2"/>' },
+  { name: 'Hermes', color: '#8b5cf6', svg: '<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2 12l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2"/>' },
+  { name: 'LangGraph', color: '#f97316', svg: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15.5M6 8.5V15.5M18 8.5V15.5M8.5 18H15.5" stroke="currentColor" stroke-width="1.5" fill="none"/>' },
+  { name: 'CrewAI', color: '#ec4899', svg: '<circle cx="12" cy="8" r="3"/><circle cx="6" cy="16" r="2.5"/><circle cx="18" cy="16" r="2.5"/><path d="M12 11v2M9.5 14.5L7.5 15.5M14.5 14.5l2 1" stroke="currentColor" stroke-width="1.5" fill="none"/>' },
+  { name: 'Codex', color: '#6366f1', svg: '<path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>' },
 ];
 
 function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () => void }) {
@@ -47,8 +55,12 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
           <div className="land__trust-track">
             {[0, 1].map((k) => (
               <div key={k} className="land__trust-set">
-                {LOGOS.map((name) => (
-                  <span key={name} className="land__trust-logo">{name}</span>
+                {LOGOS.map((logo) => (
+                  <span key={logo.name} className="land__trust-logo" style={{ color: logo.color }}>
+                    {/* SVG icons are hardcoded constants, not user input */}
+                    <svg className="land__trust-icon" viewBox="0 0 24 24" fill="currentColor" dangerouslySetInnerHTML={{ __html: logo.svg }} />
+                    {logo.name}
+                  </span>
                 ))}
               </div>
             ))}
