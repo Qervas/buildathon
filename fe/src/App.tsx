@@ -61,6 +61,52 @@ function Landing({ onEnter, onGallery }: { onEnter: () => void; onGallery: () =>
             </p>
           </div>
         </section>
+
+        <section className="landing__integrations">
+          <p className="eyebrow">Integrations</p>
+          <h2>Use it everywhere</h2>
+          <div className="integration-cards">
+            <a
+              className="integration-card"
+              href="https://github.com/Qervas/buildathon/tree/main/mcp-server"
+              target="_blank"
+              rel="noopener"
+            >
+              <span className="integration-card__icon">MCP</span>
+              <span className="integration-card__name">AI Agent Plugin</span>
+              <span className="integration-card__desc">
+                Claude Code, Cursor, Windsurf — any MCP-compatible agent can generate animations.
+              </span>
+              <span className="integration-card__link">View on GitHub &rarr;</span>
+            </a>
+            <a
+              className="integration-card"
+              href="https://github.com/Qervas/buildathon/tree/main/plugins/blender"
+              target="_blank"
+              rel="noopener"
+            >
+              <span className="integration-card__icon">B</span>
+              <span className="integration-card__name">Blender Plugin</span>
+              <span className="integration-card__desc">
+                Sidebar panel + Ctrl+Shift+M shortcut. Generate and import BVH directly in Blender.
+              </span>
+              <span className="integration-card__link">View on GitHub &rarr;</span>
+            </a>
+            <a
+              className="integration-card"
+              href="https://backend-production-b095.up.railway.app/docs"
+              target="_blank"
+              rel="noopener"
+            >
+              <span className="integration-card__icon">{ }</span>
+              <span className="integration-card__name">REST API</span>
+              <span className="integration-card__desc">
+                Simple HTTP endpoints for text-to-motion and video motion capture. Integrate anywhere.
+              </span>
+              <span className="integration-card__link">API Docs &rarr;</span>
+            </a>
+          </div>
+        </section>
       </section>
     </main>
   );
