@@ -40,40 +40,6 @@ And nobody can use it.
 
 ---
 
-# Our Solution
-
-<div class="text-3xl font-bold text-blue-400 mt-4 mb-6">
-Type a sentence. Get a skeleton animation.
-</div>
-
-<div class="grid grid-cols-3 gap-4 mt-4">
-
-<div class="bg-gray-800 rounded-lg p-5 text-center">
-<div class="text-3xl mb-3">📝</div>
-<div class="font-bold text-blue-400 mb-2">Text to Motion</div>
-<div class="text-sm text-gray-400">"person doing a victory dance" → full-body skeleton animation. Open-source AI.</div>
-</div>
-
-<div class="bg-gray-800 rounded-lg p-5 text-center">
-<div class="text-3xl mb-3">📱</div>
-<div class="font-bold text-green-400 mb-2">Video Motion Capture</div>
-<div class="text-sm text-gray-400">Upload any phone video → professional animation data. No suit. No studio.</div>
-</div>
-
-<div class="bg-gray-800 rounded-lg p-5 text-center">
-<div class="text-3xl mb-3">🔌</div>
-<div class="font-bold text-orange-400 mb-2">Works Everywhere</div>
-<div class="text-sm text-gray-400">Web · API · AI agent plugin · Blender. Works with Unity, Unreal, Godot.</div>
-</div>
-
-</div>
-
-<div class="mt-8 text-xl font-bold text-green-400">
-~$0.002 per animation. 100,000x cheaper than a studio.
-</div>
-
----
-
 # The Market
 
 <div class="grid grid-cols-2 gap-8 mt-4">
@@ -130,6 +96,40 @@ Sweden: **#1 game-producing per capita** · 900+ studios · Minecraft, Battlefie
 
 </div>
 
+</div>
+
+---
+
+# Our Solution
+
+<div class="text-3xl font-bold text-blue-400 mt-4 mb-6">
+Type a sentence. Get a skeleton animation.
+</div>
+
+<div class="grid grid-cols-3 gap-4 mt-4">
+
+<div class="bg-gray-800 rounded-lg p-5 text-center">
+<div class="text-3xl mb-3">📝</div>
+<div class="font-bold text-blue-400 mb-2">Text to Motion</div>
+<div class="text-sm text-gray-400">"person doing a victory dance" → full-body skeleton animation. Open-source AI.</div>
+</div>
+
+<div class="bg-gray-800 rounded-lg p-5 text-center">
+<div class="text-3xl mb-3">📱</div>
+<div class="font-bold text-green-400 mb-2">Video Motion Capture</div>
+<div class="text-sm text-gray-400">Upload any phone video → professional animation data. No suit. No studio.</div>
+</div>
+
+<div class="bg-gray-800 rounded-lg p-5 text-center">
+<div class="text-3xl mb-3">🔌</div>
+<div class="font-bold text-orange-400 mb-2">Works Everywhere</div>
+<div class="text-sm text-gray-400">Web · API · AI agent plugin · Blender. Works with Unity, Unreal, Godot.</div>
+</div>
+
+</div>
+
+<div class="mt-8 text-xl font-bold text-green-400">
+~$0.002 per animation. 100,000x cheaper than a studio.
 </div>
 
 ---
