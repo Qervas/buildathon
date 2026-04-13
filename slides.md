@@ -296,53 +296,51 @@ Cost per generation: fractions of a cent. Unit economics work at every tier. Tar
 
 # What We Built Today
 
-<div class="mt-2 mb-4 text-lg text-gray-400">One day. Three people.</div>
+<div class="mt-2 mb-6 text-lg text-gray-400">One day. Three people. Fully working product.</div>
 
-<div class="grid grid-cols-2 gap-6">
+<div class="grid grid-cols-2 gap-8">
 
-<div class="space-y-3">
-
-<div class="flex items-center gap-3">
-<div class="text-green-400 text-lg">✓</div>
-<div><strong>2 GPU inference services</strong> — serverless<br><span class="text-sm text-gray-400">Text→motion + Video→mocap on cloud GPUs</span></div>
-</div>
+<div class="space-y-4">
 
 <div class="flex items-center gap-3">
-<div class="text-green-400 text-lg">✓</div>
-<div><strong>FastAPI + PostgreSQL</strong> backend<br><span class="text-sm text-gray-400">REST API, R2 storage, async webhooks</span></div>
+<div class="text-green-400 text-xl">✓</div>
+<div class="text-lg"><strong>Text to animation</strong> — type a sentence, get a skeleton</div>
 </div>
 
 <div class="flex items-center gap-3">
-<div class="text-green-400 text-lg">✓</div>
-<div><strong>React + Three.js</strong> frontend<br><span class="text-sm text-gray-400">Chat UI, 3D skeleton viewer, gallery</span></div>
+<div class="text-green-400 text-xl">✓</div>
+<div class="text-lg"><strong>Video to motion capture</strong> — upload a phone video, get pro animation</div>
 </div>
 
 <div class="flex items-center gap-3">
-<div class="text-green-400 text-lg">✓</div>
-<div><strong>MCP Server</strong> for AI agents<br><span class="text-sm text-gray-400">Claude Code, Cursor, OpenClaw can call our tools</span></div>
+<div class="text-green-400 text-xl">✓</div>
+<div class="text-lg"><strong>4 ways to use it</strong> — Web app, API, AI agent plugin, Blender plugin</div>
 </div>
 
 <div class="flex items-center gap-3">
-<div class="text-green-400 text-lg">✓</div>
-<div><strong>Blender Plugin</strong><br><span class="text-sm text-gray-400">Sidebar + Ctrl+Shift+M shortcut</span></div>
+<div class="text-green-400 text-xl">✓</div>
+<div class="text-lg"><strong>Public gallery</strong> — 10+ animations generated and viewable in 3D</div>
+</div>
+
+<div class="flex items-center gap-3">
+<div class="text-green-400 text-xl">✓</div>
+<div class="text-lg"><strong>End-to-end tested</strong> — live right now at buildathon-bii.pages.dev</div>
 </div>
 
 </div>
 
-<div class="bg-gray-800 rounded-lg p-4 text-sm font-mono">
+<div class="flex flex-col items-center justify-center">
 
-<div class="text-gray-500 mb-2"># tested — real numbers</div>
+<div class="text-6xl font-bold text-green-400 mb-2">5</div>
+<div class="text-xl text-gray-400 mb-6">distribution channels</div>
 
-<div class="text-green-400">$ text2motion "victory dance" 4s</div>
-<div class="text-blue-400">→ 120 frames @ 30fps</div>
-<div class="text-blue-400 mb-3">→ ~$0.002</div>
-
-<div class="text-green-400">$ video_mocap walk.mp4</div>
-<div class="text-blue-400">→ 255 frames @ 30fps</div>
-<div class="text-blue-400 mb-3">→ ~$0.04</div>
-
-<div class="text-gray-500">4 distribution channels:</div>
-<div class="text-gray-400">Web · API · AI Agents · Blender</div>
+<div class="flex flex-wrap gap-2 justify-center">
+<div class="px-4 py-2 rounded-full bg-gray-800 text-sm">Web App</div>
+<div class="px-4 py-2 rounded-full bg-gray-800 text-sm">REST API</div>
+<div class="px-4 py-2 rounded-full bg-gray-800 text-sm">AI Agents</div>
+<div class="px-4 py-2 rounded-full bg-gray-800 text-sm">Blender</div>
+<div class="px-4 py-2 rounded-full bg-gray-800 text-sm">Landing Page</div>
+</div>
 
 </div>
 
