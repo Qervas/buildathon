@@ -1,9 +1,18 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { BVHLoader } from 'three/examples/jsm/loaders/BVHLoader.js';
+import {
+  bindSomaSkinToSkeleton,
+  loadSomaSkinAsset,
+  type SomaSkinBinding,
+} from './somaSkin';
+
+export type BvhDisplayMode = 'mesh' | 'skeleton';
 
 export type BvhPlayerSnapshot = {
+  canToggleDisplay: boolean;
   currentTime: number;
+  displayMode: BvhDisplayMode;
   duration: number;
   error: string | null;
   isPlaying: boolean;
@@ -23,6 +32,7 @@ export class BvhPlayerController {
   private animationFrame = 0;
   private characterGroup: THREE.Group | null = null;
   private currentTime = 0;
+  private displayMode: BvhDisplayMode = 'skeleton';
   private duration = 0;
   private error: string | null = null;
   private isDestroyed = false;
@@ -30,6 +40,7 @@ export class BvhPlayerController {
   private lastFrameAt = 0;
   private listeners = new Set<SnapshotListener>();
   private mixer: THREE.AnimationMixer | null = null;
+  private skinBinding: SomaSkinBinding | null = null;
   private skeletonBonePairs: Array<[THREE.Bone, THREE.Bone]> = [];
   private skeletonLines: THREE.LineSegments | null = null;
 
@@ -146,6 +157,17 @@ export class BvhPlayerController {
     this.play();
   }
 
+  toggleDisplayMode() {
+    if (!this.skinBinding) {
+      return;
+    }
+
+    this.displayMode = this.displayMode === 'mesh' ? 'skeleton' : 'mesh';
+    this.applyDisplayMode();
+    this.renderer.render(this.scene, this.camera);
+    this.emit();
+  }
+
   private animate = (timestamp = 0) => {
     if (this.isDestroyed) {
       return;
@@ -163,6 +185,7 @@ export class BvhPlayerController {
       this.emit();
     }
 
+    this.skinBinding?.syncFromSource();
     this.updateSkeletonLines();
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
@@ -201,6 +224,8 @@ export class BvhPlayerController {
       this.skeletonLines = null;
     }
     this.skeletonBonePairs = [];
+    this.skinBinding = null;
+    this.displayMode = 'skeleton';
 
     if (!this.characterGroup) {
       return;
@@ -230,6 +255,16 @@ export class BvhPlayerController {
     this.listeners.forEach((listener) => listener(next));
   }
 
+  private applyDisplayMode() {
+    if (this.skinBinding) {
+      this.skinBinding.skinnedMesh.visible = this.displayMode === 'mesh';
+    }
+
+    if (this.skeletonLines) {
+      this.skeletonLines.visible = this.displayMode === 'skeleton';
+    }
+  }
+
   private frameCharacter(size: THREE.Vector3) {
     // size is already normalised to ~1.8 units by the auto-scale in load().
     const height = size.y > 0 ? size.y : 1;
@@ -251,7 +286,7 @@ export class BvhPlayerController {
 
     loader.load(
       this.assetUrl,
-      (result) => {
+      async (result) => {
         if (this.isDestroyed) {
           return;
         }
@@ -267,8 +302,31 @@ export class BvhPlayerController {
         this.characterGroup.add(boneContainer);
         this.scene.add(this.characterGroup);
 
+        let skinAttached = false;
+        try {
+          const skinAsset = await loadSomaSkinAsset();
+          if (this.isDestroyed || !this.characterGroup) {
+            return;
+          }
+
+          const skinBinding = bindSomaSkinToSkeleton(skinAsset, result.skeleton.bones);
+          this.skinBinding = skinBinding;
+          this.characterGroup.add(skinBinding.skinnedMesh);
+          skinAttached = true;
+
+          if (skinBinding.missingJoints.length > 0) {
+            console.warn(
+              `[BvhPlayer] Attached SOMA skin with ${skinBinding.missingJoints.length} proxy joints:`,
+              skinBinding.missingJoints,
+            );
+          }
+        } catch (skinError) {
+          console.warn('[BvhPlayer] Falling back to skeleton lines:', skinError);
+        }
+
         this.mixer = new THREE.AnimationMixer(skeletonRoot);
         this.mixer.clipAction(result.clip).play();
+        this.skinBinding?.syncFromSource();
 
         this.duration = result.clip.duration;
         this.currentTime = 0;
@@ -280,14 +338,25 @@ export class BvhPlayerController {
         // THREE.Bone nodes (no geometry) and would return an empty box.
         const sampleCount = 10;
         const unionBounds = new THREE.Box3();
+        const sampleBounds = new THREE.Box3();
         const _bp = new THREE.Vector3();
         for (let i = 0; i <= sampleCount; i++) {
           this.mixer.setTime((i / sampleCount) * this.duration);
+          this.skinBinding?.syncFromSource();
+          this.characterGroup.updateMatrixWorld(true);
+
+          if (skinAttached && this.skinBinding) {
+            sampleBounds.setFromObject(this.skinBinding.skinnedMesh);
+            unionBounds.union(sampleBounds);
+            continue;
+          }
+
           for (const bone of result.skeleton.bones) {
             unionBounds.expandByPoint(bone.getWorldPosition(_bp));
           }
         }
         this.mixer.setTime(0);
+        this.skinBinding?.syncFromSource();
 
         const rawSize   = unionBounds.getSize(new THREE.Vector3());
         const rawCenter = unionBounds.getCenter(new THREE.Vector3());
@@ -305,13 +374,16 @@ export class BvhPlayerController {
         const scaledSize = rawSize.clone().multiplyScalar(scale);
         this.frameCharacter(scaledSize);
 
-        // Build custom world-space skeleton LineSegments.
-        // SkeletonHelper is unreliable when characterGroup has a large scale factor,
-        // so we manage bone-pair geometry ourselves and update it every frame.
-        this.skeletonBonePairs = [];
-        for (const bone of result.skeleton.bones) {
-          if (bone.parent instanceof THREE.Bone) {
-            this.skeletonBonePairs.push([bone, bone.parent as THREE.Bone]);
+        // In skeleton mode, prefer the retargeted character bones so the
+        // line rig and skinned mesh stay perfectly aligned in both pose and framing.
+        this.skeletonBonePairs = skinAttached && this.skinBinding
+          ? [...this.skinBinding.lineBonePairs]
+          : [];
+        if (this.skeletonBonePairs.length === 0) {
+          for (const bone of result.skeleton.bones) {
+            if (bone.parent instanceof THREE.Bone) {
+              this.skeletonBonePairs.push([bone, bone.parent as THREE.Bone]);
+            }
           }
         }
         const linePositions = new Float32Array(this.skeletonBonePairs.length * 6);
@@ -323,6 +395,9 @@ export class BvhPlayerController {
         );
         this.skeletonLines.frustumCulled = false;
         this.scene.add(this.skeletonLines);
+
+        this.displayMode = 'skeleton';
+        this.applyDisplayMode();
 
         this.play();
         this.emit();
@@ -338,7 +413,9 @@ export class BvhPlayerController {
 
   private snapshot(): BvhPlayerSnapshot {
     return {
+      canToggleDisplay: Boolean(this.skinBinding),
       currentTime: this.currentTime,
+      displayMode: this.displayMode,
       duration: this.duration,
       error: this.error,
       isPlaying: this.isPlaying,

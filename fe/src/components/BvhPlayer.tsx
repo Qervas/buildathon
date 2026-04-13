@@ -2,13 +2,16 @@ import { startTransition, useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import {
   BvhPlayerController,
+  type BvhDisplayMode,
   type BvhPlayerSnapshot,
 } from '../lib/BvhPlayerController';
 
 const DEMO_BVH_URL = '/demo/running_animation.bvh';
 
 const INITIAL_SNAPSHOT: BvhPlayerSnapshot = {
+  canToggleDisplay: false,
   currentTime: 0,
+  displayMode: 'skeleton',
   duration: 0,
   error: null,
   isPlaying: false,
@@ -33,6 +36,36 @@ function getProgress(currentTime: number, duration: number) {
 
 function clampRatio(ratio: number) {
   return Math.min(Math.max(ratio, 0), 1);
+}
+
+function DisplayModeIcon({ mode }: { mode: BvhDisplayMode }) {
+  if (mode === 'skeleton') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="5" r="2.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+        <path
+          d="M12 7.4V12.4M8.5 10.3L12 12.4L15.5 10.3M9.2 18.2L12 12.4L14.8 18.2M9.3 23.2L9.2 18.2M14.7 23.2L14.8 18.2"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 2.8C14.2 2.8 16 4.6 16 6.8C16 8.1 15.4 9.3 14.5 10.1C16.9 11.3 18.2 13.8 18.2 17V21.2H5.8V17C5.8 13.8 7.1 11.3 9.5 10.1C8.6 9.3 8 8.1 8 6.8C8 4.6 9.8 2.8 12 2.8Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
 }
 
 export function BvhPlayer() {
@@ -153,6 +186,10 @@ export function BvhPlayer() {
     controllerRef.current?.toggle();
   };
 
+  const toggleDisplayMode = () => {
+    controllerRef.current?.toggleDisplayMode();
+  };
+
   const handleTrackKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!snapshot.ready || !snapshot.duration) {
       return;
@@ -195,6 +232,12 @@ export function BvhPlayer() {
   };
 
   const toggleLabel = snapshot.isPlaying ? 'Pause playback' : 'Resume playback';
+  const nextDisplayMode: BvhDisplayMode =
+    snapshot.displayMode === 'mesh' ? 'skeleton' : 'mesh';
+  const displayToggleLabel =
+    nextDisplayMode === 'skeleton'
+      ? 'Switch to skeleton view'
+      : 'Switch to character model view';
 
   return (
     <main className="page-shell">
@@ -224,6 +267,17 @@ export function BvhPlayer() {
                   ? 'Autoplay preview ready'
                   : 'Loading bundled BVH sample...'}
             </div>
+
+            <button
+              type="button"
+              className="viewer-display-toggle"
+              onClick={toggleDisplayMode}
+              disabled={!snapshot.canToggleDisplay}
+              aria-label={displayToggleLabel}
+              title={displayToggleLabel}
+            >
+              <DisplayModeIcon mode={nextDisplayMode} />
+            </button>
 
             <div className="control-dock">
               <div
