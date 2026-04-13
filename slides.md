@@ -114,30 +114,6 @@ Type a sentence. Get a skeleton animation.
 </div>
 
 ---
-layout: center
-class: text-center
----
-
-# Live Demo
-
-<div class="text-2xl text-gray-400 mb-8">
-Let's generate an animation right now.
-</div>
-
-<div class="text-6xl mb-4">🎬</div>
-
-<div class="text-sm opacity-50">switching to browser...</div>
-
-<!--
-1. Open chat → type "a person doing a victory dance" → 3s duration → Generate
-2. While loading (~30s): "Open-source AI running in the cloud. Full-body skeleton from 5 words."
-3. Skeleton starts dancing. LET THE AUDIENCE REACT. Don't talk over it.
-4. "Industry-standard format. Import directly into Blender, Unity, Unreal."
-5. Show Blender plugin: sidebar → Generate Motion → skeleton appears in viewport.
-6. Show Gallery: past results, inline previews, download links.
--->
-
----
 
 # The Market
 
@@ -195,68 +171,6 @@ Sweden: **#1 game-producing per capita** · 900+ studios · Minecraft, Battlefie
 
 </div>
 
-</div>
-
----
-
-# Ecosystem & Moat
-
-<div class="grid grid-cols-2 gap-8 mt-4">
-
-<div>
-
-<div class="text-sm font-bold text-gray-400 mb-3">AGENT-NATIVE — WORKS WITH EVERYTHING</div>
-
-<div class="grid grid-cols-2 gap-2 text-sm">
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">MCP</span> — AI agent tool protocol</div>
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">REST API</span> — integrate from any code</div>
-<div class="bg-green-900/30 border border-green-500/20 rounded p-2"><span class="text-green-400 font-bold">Blender</span> — sidebar plugin</div>
-<div class="bg-gray-800 border border-gray-700 rounded p-2"><span class="text-gray-500 font-bold">A2A</span> — agent-to-agent protocol · soon</div>
-</div>
-
-<div class="flex flex-wrap gap-1.5 mt-3">
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Claude Code</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Cursor</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Codex</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">OpenClaw</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Hermes</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Blender</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Unity</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Unreal</div>
-<div class="px-2 py-0.5 rounded-full bg-gray-800 text-xs text-gray-400">Godot</div>
-</div>
-
-</div>
-
-<div>
-
-<div class="text-sm font-bold text-gray-400 mb-3">WHY NOT JUST DEPLOY THE MODELS YOURSELF?</div>
-
-<div class="space-y-3 text-sm">
-
-<div class="bg-blue-900/30 border border-blue-500/30 rounded-lg p-3">
-<div class="font-bold text-blue-400">Cross-Model Pipelines</div>
-<div class="text-gray-400">Image → 3D → rig → animate. No single model does this.</div>
-</div>
-
-<div class="bg-orange-900/30 border border-orange-500/30 rounded-lg p-3">
-<div class="font-bold text-orange-400">Speed of Deployment</div>
-<div class="text-gray-400">New model Tuesday, deployed Thursday. We know the quirks.</div>
-</div>
-
-<div class="bg-green-900/30 border border-green-500/30 rounded-lg p-3">
-<div class="font-bold text-green-400">Compounding Expertise</div>
-<div class="text-gray-400">Every model makes the platform more valuable.</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="mt-4 text-lg font-bold">
-We're the <span class="text-blue-400">Cloudflare</span> of open-source AI. <span class="text-gray-500">They didn't create the internet — they made it accessible.</span>
 </div>
 
 ---
@@ -345,6 +259,30 @@ Cost per generation: fractions of a cent. Unit economics work at every tier. Tar
 </div>
 
 </div>
+
+---
+layout: center
+class: text-center
+---
+
+# Live Demo
+
+<div class="text-2xl text-gray-400 mb-8">
+Let's generate an animation right now.
+</div>
+
+<div class="text-6xl mb-4">🎬</div>
+
+<div class="text-sm opacity-50">switching to browser...</div>
+
+<!--
+1. Open chat → type "a person doing a victory dance" → 3s duration → Generate
+2. While loading (~30s): "Open-source AI running in the cloud. Full-body skeleton from 5 words."
+3. Skeleton starts dancing. LET THE AUDIENCE REACT. Don't talk over it.
+4. "Industry-standard format. Import directly into Blender, Unity, Unreal."
+5. Show Blender plugin: sidebar → Generate Motion → skeleton appears in viewport.
+6. Show Gallery: past results, inline previews, download links.
+-->
 
 ---
 
