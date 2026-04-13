@@ -386,9 +386,25 @@ class OhaoProperties(bpy.types.PropertyGroup):
     )
 
 
-# ── Panel ────────────────────────────────────────────────────────────
+# ── Panels ───────────────────────────────────────────────────────────
+
+def _draw_status(layout):
+    """Shared status drawing for all panels."""
+    if _gen_state["running"]:
+        elapsed = int(time.time() - _gen_state["start_time"])
+        box = layout.box()
+        box.label(text=_gen_state["stage"], icon='SORTTIME')
+        box.label(text=f"Elapsed: {elapsed}s")
+    elif _gen_state["done"]:
+        box = layout.box()
+        if _gen_state["error"]:
+            box.label(text=_gen_state["stage"], icon='ERROR')
+        else:
+            box.label(text=_gen_state["stage"], icon='CHECKMARK')
+
 
 class OHAO_PT_MainPanel(bpy.types.Panel):
+    """Sidebar panel in 3D Viewport (N key > ohao tab)"""
     bl_label = "ohao Motion"
     bl_idname = "OHAO_PT_main"
     bl_space_type = 'VIEW_3D'
@@ -399,20 +415,7 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
         layout = self.layout
         props = context.scene.ohao
 
-        # Status bar
-        if _gen_state["running"]:
-            elapsed = int(time.time() - _gen_state["start_time"])
-            box = layout.box()
-            box.label(text=_gen_state["stage"], icon='SORTTIME')
-            box.label(text=f"Elapsed: {elapsed}s")
-            box.separator()
-        elif _gen_state["done"]:
-            box = layout.box()
-            if _gen_state["error"]:
-                box.label(text=_gen_state["stage"], icon='ERROR')
-            else:
-                box.label(text=_gen_state["stage"], icon='CHECKMARK')
-            box.separator()
+        _draw_status(layout)
 
         # Text to Motion
         box = layout.box()
@@ -433,6 +436,72 @@ class OHAO_PT_MainPanel(bpy.types.Panel):
         row.operator("ohao.extract_motion", text="Select Video...", icon='FILE_MOVIE')
 
         layout.separator()
+        layout.label(text="Shortcut: Ctrl+Shift+M", icon='EVENT_M')
+        layout.operator("ohao.test_connection", text="Test Connection", icon='URL')
+
+
+class OHAO_PT_PropertiesPanel(bpy.types.Panel):
+    """Panel in Properties Editor > Object Data tab (appears for any object)"""
+    bl_label = "ohao Motion"
+    bl_idname = "OHAO_PT_properties"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "object"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.ohao
+
+        _draw_status(layout)
+
+        # Text to Motion
+        layout.prop(props, "motion_prompt", text="Prompt")
+        layout.prop(props, "motion_duration")
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.text_to_motion", text="Generate Motion", icon='PLAY')
+
+        layout.separator()
+
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.extract_motion", text="Motion from Video...", icon='FILE_MOVIE')
+
+
+class OHAO_PT_BonePanel(bpy.types.Panel):
+    """Panel in Properties Editor > Bone Data tab (appears when armature selected)"""
+    bl_label = "ohao Motion"
+    bl_idname = "OHAO_PT_bone"
+    bl_space_type = 'PROPERTIES'
+    bl_region_type = 'WINDOW'
+    bl_context = "data"
+    bl_options = {'DEFAULT_CLOSED'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.object and context.object.type == 'ARMATURE'
+
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.ohao
+
+        _draw_status(layout)
+
+        layout.label(text="Generate new motion for this armature:", icon='ANIM_DATA')
+        layout.prop(props, "motion_prompt", text="Prompt")
+        layout.prop(props, "motion_duration")
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.text_to_motion", text="Generate Motion", icon='PLAY')
+
+        layout.separator()
+
+        row = layout.row()
+        row.enabled = not _gen_state["running"]
+        row.operator("ohao.extract_motion", text="Motion from Video...", icon='FILE_MOVIE')
+
+        layout.separator()
 
         # Quick access
         layout.label(text="Shortcut: Ctrl+Shift+M", icon='EVENT_M')
@@ -449,6 +518,8 @@ classes = (
     OHAO_OT_TestConnection,
     OHAO_OT_QuickGenerate,
     OHAO_PT_MainPanel,
+    OHAO_PT_PropertiesPanel,
+    OHAO_PT_BonePanel,
 )
 
 addon_keymaps = []
