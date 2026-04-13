@@ -289,9 +289,10 @@ Every one of these studios needs animation. We make it 100x faster and 1000x che
 </div>
 
 <div class="bg-green-900/30 border border-green-500/30 rounded-lg p-3">
-<div class="text-green-400 font-bold">ohao</div>
-<div class="text-green-300">$0.001 per text animation. $0.02 per video mocap.</div>
-<div class="text-green-400 font-bold mt-1">150,000x cheaper.</div>
+<div class="text-green-400 font-bold">ohao (tested)</div>
+<div class="text-green-300">~$0.002 per text animation (5s A10 GPU)</div>
+<div class="text-green-300">~$0.04 per video mocap (120s A10 GPU)</div>
+<div class="text-green-400 font-bold mt-1">100,000x cheaper than studio mocap.</div>
 </div>
 
 </div>
@@ -301,8 +302,9 @@ Every one of these studios needs animation. We make it 100x faster and 1000x che
 </div>
 
 <!--
-Key stat for Q&A: At $29/mo Pro tier with 100 generations, our cost is $0.10. That's 99.7% margin.
-55% of indie devs are solo. 50% self-funded. They can't afford $2,500/day mocap. We give them the same quality for $0.001.
+Tested numbers: text2motion averages 5s GPU ($0.002), video mocap averages 120s GPU ($0.04).
+At $29/mo Pro with 500 text generations: cost $1.00 = 96.5% margin.
+55% of indie devs are solo. 50% self-funded. Can't afford $2,500/day mocap.
 -->
 
 ---

@@ -37,12 +37,12 @@
 - Single rigged animation cycle: starts at **$150**
 - Full AAA art production: 25-30% of total budget ($180M-$650M games)
 
-### Our Cost
-| Our Service | Cost | Traditional Cost | Savings |
-|-------------|------|-----------------|---------|
-| Text-to-motion (1 animation) | **$0.001** | $150+ | **150,000x cheaper** |
-| Video motion capture (1 clip) | **$0.02** | $2,500/day | **125,000x cheaper** |
-| 100 animations | **$0.10** | $15,000+ | **150,000x cheaper** |
+### Our Cost (tested on Modal A10 @ $0.000306/sec)
+| Our Service | GPU Time | Cost | Traditional Cost | Savings |
+|-------------|----------|------|-----------------|---------|
+| Text-to-motion (1 animation) | ~5s | **~$0.002** | $150+ | **75,000x cheaper** |
+| Video motion capture (1 clip) | ~120s | **~$0.04** | $2,500/day | **62,500x cheaper** |
+| 500 text animations | ~2,500s | **~$1.00** | $75,000+ | **75,000x cheaper** |
 
 ---
 
@@ -93,10 +93,11 @@
 | Studio | $99/month | Unlimited everything, priority GPU, API access |
 | Enterprise | Custom | SLA, private deployment, dedicated GPU |
 
-### Unit Economics
-- Cost per text-to-motion: ~$0.001 (5s GPU @ $0.58/hr on Modal)
-- Cost per video mocap: ~$0.02 (120s GPU)
-- At $29/mo Pro with 100 generations: cost ~$0.10, margin **99.7%**
+### Unit Economics (tested, Modal A10 @ $1.10/hr)
+- Cost per text-to-motion: **~$0.002** (avg 5s GPU)
+- Cost per video mocap: **~$0.04** (avg 120s GPU)
+- At $29/mo Pro with 500 text generations: cost ~$1.00, margin **96.5%**
+- At $99/mo Studio with unlimited: break-even at ~2,700 text gens or ~170 video mocaps
 
 ---
 
