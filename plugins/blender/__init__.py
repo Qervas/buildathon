@@ -247,6 +247,32 @@ class OHAO_OT_TestConnection(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class OHAO_OT_QuickGenerate(bpy.types.Operator):
+    """Quick popup to generate motion — press Ctrl+Shift+M"""
+    bl_idname = "ohao.quick_generate"
+    bl_label = "ohao: Generate Motion"
+
+    prompt: StringProperty(name="Motion", default="")
+    duration: FloatProperty(name="Duration (s)", default=4.0, min=1.0, max=10.0)
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self, width=400)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, "prompt", text="Describe motion")
+        layout.prop(self, "duration")
+
+    def execute(self, context):
+        if not self.prompt.strip():
+            self.report({'WARNING'}, "Enter a prompt")
+            return {'CANCELLED'}
+        context.scene.ohao.motion_prompt = self.prompt
+        context.scene.ohao.motion_duration = self.duration
+        bpy.ops.ohao.text_to_motion()
+        return {'FINISHED'}
+
+
 # ── Properties ───────────────────────────────────────────────────────
 
 class OhaoProperties(bpy.types.PropertyGroup):
@@ -314,18 +340,33 @@ classes = (
     OHAO_OT_TextToMotion,
     OHAO_OT_ExtractMotion,
     OHAO_OT_TestConnection,
+    OHAO_OT_QuickGenerate,
     OHAO_PT_MainPanel,
 )
+
+addon_keymaps = []
 
 
 def register():
     for cls in classes:
         bpy.utils.register_class(cls)
     bpy.types.Scene.ohao = bpy.props.PointerProperty(type=OhaoProperties)
-    print("ohao Motion plugin registered")
+
+    # Register Ctrl+Shift+M shortcut for quick generate popup
+    wm = bpy.context.window_manager
+    if wm.keyconfigs.addon:
+        km = wm.keyconfigs.addon.keymaps.new(name='3D View', space_type='VIEW_3D')
+        kmi = km.keymap_items.new('ohao.quick_generate', 'M', 'PRESS', ctrl=True, shift=True)
+        addon_keymaps.append((km, kmi))
+
+    print("ohao Motion plugin registered — Ctrl+Shift+M for quick generate")
 
 
 def unregister():
+    for km, kmi in addon_keymaps:
+        km.keymap_items.remove(kmi)
+    addon_keymaps.clear()
+
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)
     del bpy.types.Scene.ohao
