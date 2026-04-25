@@ -1,5 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { BvhPlayerController } from '../../lib/BvhPlayerController';
+import { startTransition, useEffect, useRef, useState } from 'react';
+import {
+  BvhPlayerController,
+  type BvhDisplayMode,
+  type BvhPlayerSnapshot,
+} from '../../lib/BvhPlayerController';
 import type { Job } from '../../services/api';
 import { getMediaUrl, pollJob } from '../../services/api';
 
@@ -7,9 +11,50 @@ interface Props {
   jobId: string;
 }
 
+const INITIAL_SNAPSHOT: BvhPlayerSnapshot = {
+  canToggleDisplay: false,
+  currentTime: 0,
+  displayMode: 'skeleton',
+  duration: 0,
+  error: null,
+  isPlaying: false,
+  ready: false,
+};
+
+function DisplayModeIcon({ mode }: { mode: BvhDisplayMode }) {
+  if (mode === 'skeleton') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="5" r="2.2" fill="none" stroke="currentColor" strokeWidth="1.7" />
+        <path
+          d="M12 7.4V12.4M8.5 10.3L12 12.4L15.5 10.3M9.2 18.2L12 12.4L14.8 18.2M9.3 23.2L9.2 18.2M14.7 23.2L14.8 18.2"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.7"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 2.8C14.2 2.8 16 4.6 16 6.8C16 8.1 15.4 9.3 14.5 10.1C16.9 11.3 18.2 13.8 18.2 17V21.2H5.8V17C5.8 13.8 7.1 11.3 9.5 10.1C8.6 9.3 8 8.1 8 6.8C8 4.6 9.8 2.8 12 2.8Z"
+        fill="none"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.7"
+      />
+    </svg>
+  );
+}
+
 export function AnimationCard({ jobId }: Props) {
   const [job, setJob] = useState<Job | null>(null);
   const [elapsed, setElapsed] = useState(0);
+  const [snapshot, setSnapshot] = useState(INITIAL_SNAPSHOT);
   const viewerRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<BvhPlayerController | null>(null);
   const startTime = useRef(Date.now());
@@ -36,12 +81,25 @@ export function AnimationCard({ jobId }: Props) {
     const url = getMediaUrl(job.result_url);
     const controller = new BvhPlayerController(viewerRef.current, url);
     controllerRef.current = controller;
+    const unsubscribe = controller.subscribe((next) => {
+      startTransition(() => {
+        setSnapshot(next);
+      });
+    });
 
     return () => {
+      unsubscribe();
       controller.destroy();
       controllerRef.current = null;
     };
   }, [job?.result_url]);
+
+  const nextDisplayMode: BvhDisplayMode =
+    snapshot.displayMode === 'mesh' ? 'skeleton' : 'mesh';
+  const displayToggleLabel =
+    nextDisplayMode === 'skeleton'
+      ? 'Switch to skeleton view'
+      : 'Switch to character model view';
 
   if (!job || job.status === 'pending' || job.status === 'processing') {
     return (
@@ -77,6 +135,16 @@ export function AnimationCard({ jobId }: Props) {
   return (
     <div className="anim-card anim-card--complete">
       <div className="anim-card__viewer">
+        <button
+          type="button"
+          className="anim-card__display-toggle"
+          onClick={() => controllerRef.current?.toggleDisplayMode()}
+          disabled={!snapshot.canToggleDisplay}
+          aria-label={displayToggleLabel}
+          title={displayToggleLabel}
+        >
+          <DisplayModeIcon mode={nextDisplayMode} />
+        </button>
         <div ref={viewerRef} className="anim-card__viewer-inner" />
       </div>
       <div className="anim-card__footer">
